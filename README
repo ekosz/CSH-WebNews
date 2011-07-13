@@ -1,0 +1,1 @@
+CSH WebNews is a web-based NNTP client written in Rails. It is intended only for use with the internal newsgroups and authentication systems of Computer Science House at RIT (http://www.csh.rit.edu), and is practically guaranteed not to work in any other environment without significant modifications.
