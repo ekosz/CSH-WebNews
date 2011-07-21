@@ -1,1 +1,95 @@
-<p>There's nothing here yet!</p>
+<div id="toolbar">
+  <div id="user_info">
+    Posting as <span class="real_name">Alex Grant</span> <span class="username">(grantovich)</span>
+    <a class="button" href="#">Settings</a>
+  </div>
+  <div id="toolbar_buttons">
+    <h1>CSH WebNews</h1>
+    <a class="button" href="#">Home</a>
+    <a class="button" href="#">Next Unread</a>
+    <a class="button" href="#">Search News</a>
+  </div>
+</div>
+
+<div id="groups_list">
+  <h2>Newsgroups</h2>
+  <nav>
+    <ul>
+      <li class="selected"><a href="#">csh.general</a></li>
+      <li class="unread mine_in_thread"><a href="#">csh.noise<span class="unread_count"> (3)</span></a></li>
+      <li class="unread"><a href="#">csh.committee.opcomm<span class="unread_count"> (1)</span></a></li>
+      <li><a href="#">csh.committee.social</a></li>
+      <li><a href="#">csh.committee.publicrelations</a></li>
+      <li><a href="#">csh.committee.house-history</a></li>
+      <li class="unread mine_reply"><a href="#">csh.flame<span class="unread_count"> (1)</span></a></li>
+      <li><a href="#">(more groups go here)</a></li>
+    </ul>
+  </nav>
+</div>
+
+<div id="group_view">
+  <div id="group_buttons">
+    <a class="button" href="#">Post New</a>
+    <a class="button" href="#">Search Group</a>
+  </div>
+  <h2>csh.general</h2>
+  <div id="posts_list">
+    <table>
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Author</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="indent">Some other message topic</div></td>
+          <td>Russell Harmon</td>
+          <td>7/12/2011 1:40pm</td>
+        </tr>
+        <tr class="selected mine_in_thread">
+          <td><div class="indent expanded">HOCKEEEEEEEEEEYYY</div></td>
+          <td>Grant Cohoe</td>
+          <td>7/8/2011 5:57pm</td>
+        </tr>
+        <tr class="mine">
+          <td><div class="indent"><div class="indent expanded">First unquoted line of the reply, assuming the subject line wasn't changed, goes in this space right here which I am padding out with extra words.</div></div></td>
+          <td>Alex Grant</td>
+          <td>7/8/2011 7:17pm</td>
+        </tr>
+        <tr class="mine_reply">
+          <td><div class="indent"><div class="indent"><div class="indent">Why, here's a reply to the reply. Spiffing! Lorem ipsum, etc.</div></div></div></td>
+          <td>Grant Cohoe</td>
+          <td>7/8/2011 9:14pm</td>
+        </tr>
+        <tr class="mine_in_thread">
+          <td><div class="indent"><div class="indent">Anybody got Sunkist? I really like Sunkist.</div></div></td>
+          <td>Chris Lockfort</td>
+          <td>7/9/2011 2:34am</td>
+        </tr>
+        <tr>
+          <td><div class="indent expandable">More freshman info from Kurtz-bot</div></td>
+          <td>Grant Kurtz</td>
+          <td>7/4/2011 12:10pm</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="post_view">
+  <div id="post_buttons">
+    <a class="button" href="#">Post Reply</a>
+    <a class="button" href="#">Full Headers</a>
+  </div>
+  <div class="headers">From: <a href="#">Grant Cohoe</a> &lt;email@example.com&gt;
+Subject: HOCKEEEEEEEEEEYYY
+Date: Fri, 8 Jul 2011 17:57:35 -0400
+Message-ID: &lt;iv7ub9$nnb$1@news.csh.rit.edu&gt;</div>
+  <div class="body">Here is an external link.
+
+<a href="#">http://ritathletics.com/schedule.aspx?path=mhock</a>
+
+Message content goes here, maybe?</div>
+</div>
