@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/drnic/composite_primary_keys.git
+  revision: 709616755d681ea72cc01f040b2ebc50ab419cd4
+  specs:
+    composite_primary_keys (4.0.0.beta4)
+      activerecord (= 3.1.0.rc4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -111,6 +118,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-script
+  composite_primary_keys!
   jquery-rails
   mysql2
   rails (= 3.1.0.rc4)

@@ -10,6 +10,9 @@ group :production do
   gem 'mysql2'
 end
 
+gem 'composite_primary_keys',
+  :git => 'git://github.com/drnic/composite_primary_keys.git'
+
 # ExecJS engine
 gem 'therubyracer'
 
