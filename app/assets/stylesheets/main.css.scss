@@ -86,14 +86,14 @@ textarea {
     background-color: #bbb;
   }
   
-  &.green:hover {
+  &.green {
     border-color: #0b0;
-    background-color: #0b0;
+    &:hover { background-color: #0b0; }
   }
   
-  &.red:hover {
+  &.red {
     border-color: #b00;
-    background-color: #b00;
+    &:hover { background-color: #b00; }
   }
 }
 
@@ -243,6 +243,11 @@ textarea {
   width: 640px;
   padding: 10px;
   background-color: #f5f5f5;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-top: 0;
+  
+  .dialog_buttons {
+    text-align: right;
+    margin-top: 20px;
+  }
 }
