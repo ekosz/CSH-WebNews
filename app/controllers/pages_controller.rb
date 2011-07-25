@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  def main
+  def home
     respond_to do |wants|
       wants.html do
         

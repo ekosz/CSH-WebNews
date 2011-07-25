@@ -1,0 +1,1 @@
+alert('Navigated to home.')

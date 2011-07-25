@@ -46,6 +46,9 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.1.1)
+    coffeebeans (1.0.1)
+      actionpack (>= 3.0.0)
+      coffee-script
     erubis (2.7.0)
     execjs (1.2.0)
       multi_json (~> 1.0)
@@ -118,6 +121,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-script
+  coffeebeans
   composite_primary_keys!
   jquery-rails
   mysql2
