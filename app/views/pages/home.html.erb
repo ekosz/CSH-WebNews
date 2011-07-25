@@ -1,11 +1,12 @@
 <div id="toolbar">
   <div id="user_info">
-    Posting as <span class="real_name">Alex Grant</span> <span class="username">(grantovich)</span>
+    Posting as <span class="real_name"><%= @current_user.real_name %></span>
+    <span class="username">(<%= @current_user.username %>)</span>
     <a class="button" href="#?/preferences">Settings</a>
   </div>
   <div id="toolbar_buttons">
     <h1>CSH WebNews</h1>
-    <a class="button" href="#">Home</a>
+    <a class="button" href="#!/home">Home</a>
     <a class="button" href="#">Next Unread</a>
     <a class="button" href="#">Search News</a>
   </div>
@@ -28,7 +29,8 @@
 </div>
 
 <div id="group_view">
-  <div id="group_buttons">
+  <%= render('new_user') if @new_user %>
+  <!--<div id="group_buttons">
     <a class="button" href="#">Post New</a>
     <a class="button" href="#">Search Group</a>
   </div>
@@ -75,11 +77,11 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </div>-->
 </div>
 
 <div id="post_view">
-  <div id="post_buttons">
+  <!--<div id="post_buttons">
     <a class="button" href="#">Post Reply</a>
     <a class="button" href="#">Full Headers</a>
   </div>
@@ -91,5 +93,5 @@ Message-ID: &lt;iv7ub9$nnb$1@news.csh.rit.edu&gt;</div>
 
 <a href="#">http://ritathletics.com/schedule.aspx?path=mhock</a>
 
-Message content goes here, maybe?</div>
+Message content goes here, maybe?</div>-->
 </div>
