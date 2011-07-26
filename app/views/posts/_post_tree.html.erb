@@ -18,7 +18,7 @@ end
   <td>
     <% (level - 1).times do %><div class="indent"><% end %>
     <div class="indent<%= children.count > 0 ? ' expanded' : '' %>">
-    <%= post.subject %>
+    <a href="#!<%= post_path(@newsgroup.name, post.number) %>"><%= post.subject %></a>
     <% level.times do %></div><% end %>
   </td>
   <td><%= post.author_name %></td>

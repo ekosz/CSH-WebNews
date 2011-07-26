@@ -31,8 +31,13 @@ class Post < ActiveRecord::Base
   def author_email
     author[/"?.*?"? <(.*)>/, 1] || author[/(.*) \(.*\)/, 1] || nil
   end
-
-  def to_param
-    "#{newsgroup}/#{number}"
+  
+  def short_headers
+    [
+      headers[/From: .*/],
+      headers[/Date: .*/],
+      headers[/Subject: .*/],
+      headers[/Message-ID: .*/]
+    ].join("\n")
   end
 end

@@ -204,21 +204,31 @@ i { font-style: italic; }
 }
 
 #post_view {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   position: absolute;
   top: 50%;
   left: 20%;
   right: 0;
   bottom: 0;
-  padding: 10px;
   border-top: $pane_border;
   border-left: $pane_border;
   
   #post_buttons {
+    z-index: 1;
     position: absolute;
     top: 10px;
+    right: 20px;
+  }
+  
+  #post_content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
     right: 0;
+    bottom: 0;
   }
   
   .headers, .body {
@@ -229,7 +239,7 @@ i { font-style: italic; }
   }
   
   .headers {
-    color: #777;
+    color: #999;
   }
   
   .body {
@@ -239,7 +249,7 @@ i { font-style: italic; }
 }
 
 #overlay {
-  z-index: 1;
+  z-index: 10;
   position: absolute;
   left: 0;
   right: 0;
@@ -251,7 +261,7 @@ i { font-style: italic; }
 
 #dialog {
   position: absolute;
-  z-index: 2;
+  z-index: 11;
   top: 0;
   left: 0;
   right: 0;

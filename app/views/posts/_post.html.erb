@@ -1,0 +1,11 @@
+<div id="post_buttons">
+  <a class="button" href="#">Post Reply</a>
+  <a class="button" href="#"
+    onclick="$('#post_view .headers').toggle(); return false;">Full Headers</a>
+  <% if post.authored_by?(@current_user) %><a class="button red" href="#">Cancel Post</a><% end %>
+</div>
+<div id="post_content">
+  <div class="headers"><%= post.short_headers %></div>
+  <div class="full headers"><%= post.headers %></div>
+  <div class="body"><%= post.body %></div>
+</div>

@@ -4,6 +4,7 @@ class PostsController < ApplicationController
   end
   
   def show
+    @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
   end
   
   def new
