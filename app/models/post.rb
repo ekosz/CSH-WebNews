@@ -9,7 +9,7 @@ class Post < ActiveRecord::Base
   end
   
   def children
-    Post.where(:references => message_id).order('date')
+    Post.unscoped.where(:references => message_id).order('date')
   end
   
   def authored_by?(user)
