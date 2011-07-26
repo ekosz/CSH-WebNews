@@ -1,5 +1,3 @@
-tr = $('#posts_list tr[data-number="<%= @post.number %>"]')
-
 if $('#groups_list li.selected[data-name="<%= @newsgroup.name %>"]').length == 0
   $.ajaxSetup {async: false}
   $.getScript('<%= posts_path(@newsgroup.name) %>')
@@ -11,8 +9,7 @@ if $('#groups_list li.selected[data-name="<%= @newsgroup.name %>"]').length == 0
   for child in parent.nextUntil('[data-level="1"]')
     $(child).show()
     $(child).find('.expandable').removeClass('expandable').addClass('expanded')
+  tr.addClass('selected')
 
-$('#posts_list .selected').removeClass('selected')
-tr.addClass('selected')
 $('#post_view').html '<%= j render(@post) %>'
 $('#post_view .full.headers').hide()

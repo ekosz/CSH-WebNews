@@ -10,7 +10,7 @@ $pane_border: 1px solid #444;
 }
 
 @mixin highlights {
-  &.selected { background-color: #dddfff; }
+  &.selected { background-color: #dddfff !important; }
   &:hover { background-color: #eeefff; cursor: pointer; }
 }
 

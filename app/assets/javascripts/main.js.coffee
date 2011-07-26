@@ -17,6 +17,10 @@ $('a.dialog_cancel').live 'click', ->
   $('#dialog_wrapper').remove()
   return false
   
+$('#groups_list a').live 'click', ->
+  $('#groups_list .selected').removeClass('selected')
+  $(this).closest('li').addClass('selected')
+  
 $('#posts_list tr').live 'click', ->
   tr = $(this)
       
@@ -36,6 +40,8 @@ $('#posts_list tr').live 'click', ->
       $(child).hide()
       $(child).find('.expanded').removeClass('expanded').addClass('expandable')
   
+  $('#posts_list .selected').removeClass('selected')
+  tr.addClass('selected')
   return false
 
 $(document).ajaxError (event, jqxhr, settings, exception) ->
