@@ -16,14 +16,9 @@
   <h2>Newsgroups</h2>
   <nav>
     <ul>
-      <li class="selected"><a href="#">csh.general</a></li>
-      <li class="unread mine_in_thread"><a href="#">csh.noise<span class="unread_count"> (3)</span></a></li>
-      <li class="unread"><a href="#">csh.committee.opcomm<span class="unread_count"> (1)</span></a></li>
-      <li><a href="#">csh.committee.social</a></li>
-      <li><a href="#">csh.committee.publicrelations</a></li>
-      <li><a href="#">csh.committee.house-history</a></li>
-      <li class="unread mine_reply"><a href="#">csh.flame<span class="unread_count"> (1)</span></a></li>
-      <li><a href="#">(more groups go here)</a></li>
+      <% @newsgroups.each do |group| %>
+        <li data-name="<%= group.name %>"><a href="#!<%= posts_path(group.name) %>"><%= group.name %></a></li>
+      <% end %>
     </ul>
   </nav>
 </div>

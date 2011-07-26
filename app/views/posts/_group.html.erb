@@ -1,0 +1,22 @@
+<div id="group_buttons">
+  <a class="button" href="#">Post New</a>
+  <a class="button" href="#">Search Group</a>
+</div>
+<h2><%= @newsgroup.name %></h2>
+<div id="posts_list">
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Author</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @newsgroup.posts.where('"references" = ? and date > ?', '', 1.year.ago).each do |post| %>
+        <%= render :partial => 'post_tree',
+          :locals => { :post => post, :level => 1, :mine_in_thread => false } %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

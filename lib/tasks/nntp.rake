@@ -23,11 +23,13 @@ namespace :nntp do
             :author => head[/From: (.*)/, 1],
             :date => DateTime.parse(head[/Date: (.*)/, 1]),
             :message_id => head[/Message-ID: (.*)/, 1],
-            :references => head[/References: (.*)/, 1] || '',
+            :references => head[/References: (.*)/, 1].to_s.split[-1] || '',
             :headers => head,
             :body => body)
           print '.'
         end
+        
+        puts
       #end
     end
   end

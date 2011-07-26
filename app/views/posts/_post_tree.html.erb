@@ -1,0 +1,31 @@
+<% parent = post.parent %>
+<% children = post.children %>
+<%
+mine_in_thread = post.user_in_thread?(@current_user) if level == 1
+tr_class = ''
+if post.authored_by?(@current_user)
+  tr_class = 'mine'
+elsif parent and parent.authored_by?(@current_user)
+  tr_class = 'mine_reply'
+elsif mine_in_thread
+  tr_class = 'mine_in_thread'
+end
+%>
+<tr class="<%= tr_class %>"
+  data-level="<%= level %>"
+  data-number="<%= post.number %>"
+  data-parent="<%= parent ? parent.number : '' %>">
+  <td>
+    <% (level - 1).times do %><div class="indent"><% end %>
+    <div class="indent<%= children.count > 0 ? ' expanded' : '' %>">
+    <%= post.subject %>
+    <% level.times do %></div><% end %>
+  </td>
+  <td><%= post.author_name %></td>
+  <td><%= post.date.strftime('%-m/%-d/%Y %-I:%M%P') %></td>
+</tr>
+
+<% children.each do |child| %>
+  <%= render :partial => 'post_tree',
+    :locals => { :post => child, :level => level + 1, :mine_in_thread => mine_in_thread } %>
+<% end if children.count > 0 %>

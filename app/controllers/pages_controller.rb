@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
   def home
     respond_to do |wants|
+    
       wants.html do
         if @current_user.nil?
           @current_user = User.create!(
@@ -10,11 +11,14 @@ class PagesController < ApplicationController
           )
           @new_user = true
         end
+        
+        @newsgroups = Newsgroup.where(:status => 'y')
       end
       
       wants.js do
         
       end
+      
     end
   end
 end

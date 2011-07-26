@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   def index
+    @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
   end
   
   def show
