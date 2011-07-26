@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
+  before_filter :get_newsgroup, :only => [:index, :show]
+
   def index
-    @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
   end
   
   def show
@@ -14,5 +15,9 @@ class PostsController < ApplicationController
   end
   
   def destroy
+  end
+  
+  def get_newsgroup
+    @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
   end
 end
