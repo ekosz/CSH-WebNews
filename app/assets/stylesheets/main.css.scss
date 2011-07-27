@@ -50,6 +50,15 @@ i { font-style: italic; }
 .mine_reply { color: #f0f; }
 .mine_in_thread { color: #00f; }
 
+#group_view .spinner,
+#post_view .spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+}
+
 #toolbar {
   height: 2.4em;
   line-height: 1.8em;

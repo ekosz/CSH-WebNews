@@ -1,9 +1,15 @@
+spinner = null
+
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
     $('#dialog_wrapper').remove()
     $.getScript location.hash.replace('#!', '')
+    if not location.hash.match $('#groups_list .selected').attr('data-name')
+      $('#group_view').empty().append(spinner.clone())
+      $('#post_view').empty()
 
 $(document).ready ->
+  spinner = $('.spinner').clone()
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'
     location.hash = '#!/home'
   else
@@ -18,15 +24,18 @@ $('a.dialog_cancel').live 'click', ->
   return false
   
 $('#groups_list a').live 'click', ->
-  $('#groups_list .selected').removeClass('selected')
-  $(this).closest('li').addClass('selected')
+  $('#group_view').empty().append(spinner.clone())
+  if not $(this).closest('li').hasClass('selected')
+    $('#post_view').empty()
+    $('#groups_list .selected').removeClass('selected')
+    $(this).closest('li').addClass('selected')
   
 $('#posts_list tr').live 'click', ->
   tr = $(this)
-      
+  
   if not tr.hasClass('selected')
     location.hash = tr.find('a').attr('href')
-    
+  
   if tr.find('.expandable').length > 0
     tr.find('.expandable').removeClass('expandable').addClass('expanded')
     for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
