@@ -1,5 +1,3 @@
-document.title = '<%= @newsgroup.name %> \u00bb <%= @post.subject %>'
-
 post_tr = -> $('#posts_list tr[data-number="<%= @post.number %>"]')
 
 show_post = ->
@@ -7,6 +5,7 @@ show_post = ->
   post_tr().addClass('selected')
   $('#post_view').html '<%= j render(@post) %>'
   $('#post_view .full.headers').hide()
+  document.title = '<%= @newsgroup.name %> \u00bb <%= @post.subject %>'
 
 if $('#groups_list li.selected[data-name="<%= @newsgroup.name %>"]').length == 0
   $('#groups_list .selected').removeClass('selected')
