@@ -1,9 +1,16 @@
 $text_margin: 0.5em;
 $pane_border: 1px solid #444;
 
+$bg_light: #f5f5f5;
+$border_light: #ddd;
+$border_button: #bbb;
+
+$text_dark: #111;
+$text_light: #999;
+
 @mixin links {
   a {
-    color: #111;
+    color: $text_dark;
     text-decoration: underline;
     &:hover { color: #77c; }
   }
@@ -38,7 +45,7 @@ a {
 }
 
 textarea {
-  color: #111;
+  color: $text_dark;
   font-family: monospace;
 }
 
@@ -50,8 +57,7 @@ i { font-style: italic; }
 .mine_reply { color: #f0f; }
 .mine_in_thread { color: #00f; }
 
-#group_view .spinner,
-#post_view .spinner {
+#group_view .spinner {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -64,7 +70,7 @@ i { font-style: italic; }
   line-height: 1.8em;
   padding: 0.6em 0 0 10px;
   background-color: #ddd;
-  border-bottom: 2px solid #bbb;
+  border-bottom: 2px solid $border_button;
   
   h1 {
     color: #bbb;
@@ -81,7 +87,7 @@ i { font-style: italic; }
     }
     
     .username {
-      color: #999;
+      color: $text_light;
     }
   }
 }
@@ -92,9 +98,9 @@ i { font-style: italic; }
   padding: 0 6px;
   margin-right: 8px;
   margin-top: -2px;
-  border: 2px solid #bbb;
+  border: 2px solid $border_button;
   border-radius: 2px;
-  background-color: #f5f5f5;
+  background-color: $bg_light;
   font-weight: bold;
   
   &:first-of-type {
@@ -102,8 +108,8 @@ i { font-style: italic; }
   }
   
   &:hover {
-    color: #fff;
-    background-color: #bbb;
+    color: $bg_light;
+    background-color: $border_button;
   }
   
   &.green {
@@ -171,6 +177,7 @@ i { font-style: italic; }
     bottom: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    border-top: 1px solid $border_light;
   
     table {
       width: 100%;
@@ -185,8 +192,9 @@ i { font-style: italic; }
       th {
         width: 20%;
         text-align: left;
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
+        background-color: $bg_light;
+        border: 1px solid $border_light;
+        border-top: 0;
         border-right: 0;
         
         &:first-child {
@@ -248,11 +256,11 @@ i { font-style: italic; }
   }
   
   .headers {
-    color: #999;
+    color: $text_light;
   }
   
   .body {
-    color: #111;
+    color: $text_dark;
     margin-top: 1em;
   }
 }
@@ -277,8 +285,8 @@ i { font-style: italic; }
   margin: 0 auto;
   width: 640px;
   padding: 10px;
-  background-color: #f5f5f5;
-  border: 2px solid #ddd;
+  background-color: $bg_light;
+  border: 2px solid $border_light;
   border-top: 0;
   
   .dialog_buttons {
