@@ -25,12 +25,11 @@ $('a.dialog_cancel').live 'click', ->
   
 $('#groups_list a').live 'click', ->
   $('#group_view').empty().append(spinner.clone())
-  if not $(this).closest('li').hasClass('selected')
-    $('#post_view').empty()
-    $('#groups_list .selected').removeClass('selected')
-    $(this).closest('li').addClass('selected')
+  $('#post_view').empty()
+  $('#groups_list .selected').removeClass('selected')
+  $(this).closest('li').addClass('selected')
   
-$('#posts_list tr').live 'click', ->
+$('#posts_list tbody tr').live 'click', ->
   tr = $(this)
   
   if not tr.hasClass('selected')

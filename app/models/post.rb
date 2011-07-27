@@ -2,14 +2,12 @@ class Post < ActiveRecord::Base
   set_primary_keys :newsgroup, :number
   belongs_to :newsgroup, :foreign_key => :newsgroup, :primary_key => :name
   
-  default_scope :order => 'date DESC'
-  
   def parent
     Post.where(:message_id => references, :newsgroup => newsgroup.name).first
   end
   
   def children
-    Post.unscoped.where(:references => message_id).order('date')
+    Post.where(:references => message_id).order('date')
   end
   
   def authored_by?(user)

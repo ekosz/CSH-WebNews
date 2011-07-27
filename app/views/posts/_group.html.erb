@@ -13,10 +13,10 @@
       </tr>
     </thead>
     <tbody>
-      <% @newsgroup.posts.where('"references" = ? and date > ?', '', 1.year.ago).each do |post| %>
-        <%= render :partial => 'post_tree',
-          :locals => { :post => post, :level => 1, :mine_in_thread => false } %>
-      <% end %>
+      <%= yield %>
     </tbody>
+    <tfoot id="posts_load">
+      <th colspan="3" class="spinner">Loading more posts...</th>
+    </tfoot>
   </table>
 </div>
