@@ -9,9 +9,21 @@ class PostsController < ApplicationController
     else
       Post.maximum(:number) + 1
     end
-    @posts = @newsgroup.posts.
-      where('"references" = ? and number < ?', '', @from).
-      order('number DESC').limit(10)
+    
+    if params[:showing]
+      @showing = @newsgroup.posts.find_by_number(params[:showing])
+      @posts = @newsgroup.posts.
+        where('"references" = ? and number >= ?', '', @showing.number).
+        order('number DESC')
+      @posts += @newsgroup.posts.
+        where('"references" = ? and number < ?', '', @showing.number).
+        order('number DESC').limit(10)
+    else
+      @posts = @newsgroup.posts.
+        where('"references" = ? and number < ?', '', @from).
+        order('number DESC').limit(10)
+    end
+    
     @more = @posts.any? && @newsgroup.posts.where('number < ?', @posts.last.number).any?
   end
   
