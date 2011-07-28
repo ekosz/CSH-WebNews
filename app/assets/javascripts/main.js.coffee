@@ -14,6 +14,7 @@ $(document).ready ->
     location.hash = '#!/home'
   else
     window.onhashchange()
+  $.getScript('/new_user') if $('#new_user').length > 0
     
 $('a[href^="#?/"]').live 'click', ->
   $.getScript @href.replace('#?', '')

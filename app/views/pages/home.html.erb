@@ -25,7 +25,7 @@
 
 <div id="group_view">
   <%= render 'shared/spinner' %>
-  <%= render('new_user') if @new_user %>
+  <% if @new_user %><div id="new_user"></div><% end %>
 </div>
 
 <div id="post_view">
