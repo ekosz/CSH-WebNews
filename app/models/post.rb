@@ -10,6 +10,14 @@ class Post < ActiveRecord::Base
     Post.where(:references => message_id).order('date')
   end
   
+  def thread_parent
+    if references == ''
+      self
+    else
+      parent.thread_parent
+    end
+  end
+  
   def authored_by?(user)
     author_name == user.real_name or author_email == user.email
   end
