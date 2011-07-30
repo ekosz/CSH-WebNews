@@ -1,0 +1,1 @@
+$('#dialog_wrapper').remove()

@@ -1,6 +1,17 @@
 <h2>Settings</h2>
-<p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field by using <a href="https://members.csh.rit.edu/profiles/">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>
-<p>Currently there are no other settings to change.</p>
-<div class="dialog_buttons">
-  <a href="#" class="button dialog_cancel">OK</a>
-</div>
+<%= form_for @current_user,
+    :url => update_user_path, :html => { :method => 'put'}, :remote => true do |f| %>
+  
+  <%= f.fields_for :preferences do |p| %>
+    <div class="form_element">
+      <%= p.check_box :show_cancel, :checked => @current_user.preferences[:show_cancel] == '1' %>
+      <%= p.label :show_cancel, 'Show control.cancel in the newsgroup list' %>
+    </div>
+  <% end %>
+  
+  <p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field by using <a href="https://members.csh.rit.edu/profiles/">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>
+  <div class="dialog_buttons">
+    <%= f.submit 'Save', :class => 'button green' %>
+    <a href="#" class="button red dialog_cancel">Cancel</a>
+  </div>
+<% end %>

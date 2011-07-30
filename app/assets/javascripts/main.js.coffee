@@ -53,8 +53,8 @@ $('#posts_list tbody tr').live 'click', ->
   tr.addClass('selected')
   return false
   
-$('a').live 'mousedown', -> this.style.outlineStyle = 'none'
-$('a').live 'blur', -> this.style.outlineStyle = ''
+$('a, input').live 'mousedown', -> this.style.outlineStyle = 'none'
+$('a, input').live 'blur', -> this.style.outlineStyle = ''
 
 $(document).ajaxError (event, jqxhr, settings, exception) ->
   alert("Error requesting #{settings.url}")
