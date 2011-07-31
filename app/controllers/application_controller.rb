@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   require 'net/nntp'
   protect_from_forgery
-  before_filter :authenticate, :get_user
+  before_filter :authenticate, :get_or_create_user
   
   private
   
@@ -11,8 +11,21 @@ class ApplicationController < ActionController::Base
       end
     end
   
-    def get_user
+    def get_or_create_user
       @current_user = User.find_by_username(ENV['WEBAUTH_USER'])
-      @current_user.touch if not @current_user.nil?
+      if @current_user.nil?
+        @current_user = User.create!(
+          :username => ENV['WEBAUTH_USER'],
+          :real_name => ENV['WEBAUTH_LDAP_CN'],
+          :preferences => {}
+        )
+        @new_user = true
+      else
+        @current_user.touch
+      end
+    end
+    
+    def get_newsgroups
+      @newsgroups = Newsgroup.where(:status => 'y')
     end
 end
