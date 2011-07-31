@@ -1,4 +1,4 @@
-spinner = null
+spinner = overlay = null
 active_navigation = null
 
 window.onhashchange = ->
@@ -11,27 +11,34 @@ window.onhashchange = ->
       $('#post_view').empty()
 
 $(document).ready ->
-  spinner = $('.spinner').clone()
+  spinner = $('#loader .spinner').clone()
+  overlay = $('#loader #overlay').clone()
+  $('#loader').remove()
+  
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'
     location.hash = '#!/home'
   else
     window.onhashchange()
-  $.getScript('/new_user') if $('#new_user').length > 0
     
+  if $('#new_user').length > 0
+    $('body').append(overlay.clone())
+    $.getScript '/new_user'
+
 $('a[href^="#?/"]').live 'click', ->
+  $('body').append(overlay.clone())
   $.getScript @href.replace('#?', '')
   return false
-  
+
 $('a.dialog_cancel').live 'click', ->
-  $('#dialog_wrapper').remove()
+  $('#overlay').remove()
   return false
-  
+
 $('#groups_list a').live 'click', ->
   $('#group_view').empty().append(spinner.clone())
   $('#post_view').empty()
   $('#groups_list .selected').removeClass('selected')
   $(this).closest('li').addClass('selected')
-  
+
 $('#posts_list tbody tr').live 'click', ->
   tr = $(this)
   
@@ -54,7 +61,7 @@ $('#posts_list tbody tr').live 'click', ->
   $('#posts_list .selected').removeClass('selected')
   tr.addClass('selected')
   return false
-  
+
 $('a, input').live 'mousedown', -> this.style.outlineStyle = 'none'
 $('a, input').live 'blur', -> this.style.outlineStyle = ''
 

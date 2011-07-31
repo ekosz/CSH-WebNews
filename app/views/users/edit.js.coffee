@@ -1,1 +1,1 @@
-$('body').append('<%= j render(:partial => 'preferences', :layout => 'shared/dialog') %>')
+$('#overlay').append('<%= j render('preferences') %>')

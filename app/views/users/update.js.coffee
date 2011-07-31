@@ -1,1 +1,1 @@
-$('#dialog_wrapper').remove()
+$('#overlay').remove()
