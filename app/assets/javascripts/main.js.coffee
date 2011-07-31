@@ -33,6 +33,9 @@ $('a.dialog_cancel').live 'click', ->
   $('#overlay').remove()
   return false
 
+$('input[type="submit"]').live 'click', ->
+  @disabled = true
+
 $('#groups_list a').live 'click', ->
   $('#group_view').empty().append(spinner.clone())
   $('#post_view').empty()
