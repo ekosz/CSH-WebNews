@@ -1,9 +1,11 @@
 spinner = null
+active_navigation = null
 
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
     $('#dialog_wrapper').remove()
-    $.getScript location.hash.replace('#!', '')
+    active_navigation.abort() if active_navigation
+    active_navigation = $.getScript location.hash.replace('#!', '')
     if not location.hash.match $('#groups_list .selected').attr('data-name')
       $('#group_view').empty().append(spinner.clone())
       $('#post_view').empty()
@@ -57,4 +59,4 @@ $('a, input').live 'mousedown', -> this.style.outlineStyle = 'none'
 $('a, input').live 'blur', -> this.style.outlineStyle = ''
 
 $(document).ajaxError (event, jqxhr, settings, exception) ->
-  alert("Error requesting #{settings.url}")
+  alert("Error requesting #{settings.url}") if jqxhr.readyState != 0
