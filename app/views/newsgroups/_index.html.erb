@@ -1,0 +1,5 @@
+<ul>
+  <% @newsgroups.each do |group| %>
+    <li data-name="<%= group.name %>"><a href="#!<%= posts_path(group.name) %>"><%= group.name %></a></li>
+  <% end %>
+</ul>

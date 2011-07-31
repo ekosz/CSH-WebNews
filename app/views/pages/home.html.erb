@@ -15,11 +15,7 @@
 <div id="groups_list">
   <h2>Newsgroups</h2>
   <nav>
-    <ul>
-      <% @newsgroups.each do |group| %>
-        <li data-name="<%= group.name %>"><a href="#!<%= posts_path(group.name) %>"><%= group.name %></a></li>
-      <% end %>
-    </ul>
+    <%= render 'newsgroups/index' %>
   </nav>
 </div>
 
