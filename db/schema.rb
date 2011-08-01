@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110722021456) do
+ActiveRecord::Schema.define(:version => 20110801003628) do
 
   create_table "newsgroups", :force => true do |t|
     t.string "name"
@@ -27,12 +27,14 @@ ActiveRecord::Schema.define(:version => 20110722021456) do
     t.string   "references"
     t.text     "headers"
     t.text     "body"
+    t.string   "first_line"
   end
 
   create_table "unread_post_entries", :force => true do |t|
     t.integer "user_id"
     t.string  "newsgroup"
     t.integer "number"
+    t.integer "personal_level"
   end
 
   create_table "users", :force => true do |t|
