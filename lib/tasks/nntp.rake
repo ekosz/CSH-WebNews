@@ -20,6 +20,15 @@ namespace :nntp do
           Post.import!(n, num.to_i, head, body)
           print '.'
         end
+        puts
+        
+        n = Newsgroup.find_by_name('csh.committee.publicrelations')
+        nntp.listgroup('csh.committee.publicrelations')[1].each do |num|
+          head = nntp.head(num)[1].join("\n")
+          body = nntp.body(num)[1].join("\n")
+          Post.import!(n, num.to_i, head, body)
+          print '.'
+        end
         
         puts
       #end

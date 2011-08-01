@@ -48,6 +48,24 @@ class Post < ActiveRecord::Base
   end
   
   def self.import!(newsgroup, number, headers, body)
+    if headers[/Content-Type: multipart/]
+      boundary = headers[/Content-Type:.*boundary="?([^"]+)"?/, 1]
+      match = /.*?#{boundary}\n(.*?)\n\n(.*?)\n(--)?#{boundary}/m.match(body)
+      headers += "\n[Message part headers begin here]\n" + match[1]
+      body = match[2]
+      if headers[/Content-Type:.*mixed/]
+        body += "\n\n[Attachment stripped by WebNews]"
+      end
+    end
+    
+    if headers[/Content-Type:.*format="?flowed"?/]
+      # FIXME: This doesn't *quite* conform to the RFC
+      body = body.gsub(/ \n /, ' ').gsub(/ \n>[> ]*/, ' ').
+        gsub(/^-- $/, '--').gsub(/ \n/, ' ').gsub(/^--$/, '-- ')
+    elsif headers[/Content-Transfer-Encoding: quoted-printable/]
+      body = body.unpack('M')[0]
+    end
+    
     create!(:newsgroup => newsgroup,
             :number => number,
             :subject => headers[/Subject: (.*)/, 1],
