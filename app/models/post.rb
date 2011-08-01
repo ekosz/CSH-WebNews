@@ -46,4 +46,16 @@ class Post < ActiveRecord::Base
       headers[/Message-ID: .*/]
     ].join("\n")
   end
+  
+  def self.import!(newsgroup, number, headers, body)
+    create!(:newsgroup => newsgroup,
+            :number => number,
+            :subject => headers[/Subject: (.*)/, 1],
+            :author => headers[/From: (.*)/, 1],
+            :date => DateTime.parse(headers[/Date: (.*)/, 1]),
+            :message_id => headers[/Message-ID: (.*)/, 1],
+            :references => headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || '',
+            :headers => headers,
+            :body => body)
+  end
 end

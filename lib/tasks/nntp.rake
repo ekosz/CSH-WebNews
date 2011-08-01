@@ -17,15 +17,7 @@ namespace :nntp do
         nntp.listgroup('csh.projects')[1].each do |num|
           head = nntp.head(num)[1].join("\n")
           body = nntp.body(num)[1].join("\n")
-          Post.create!(:newsgroup => n,
-            :number => num.to_i,
-            :subject => head[/Subject: (.*)/, 1],
-            :author => head[/From: (.*)/, 1],
-            :date => DateTime.parse(head[/Date: (.*)/, 1]),
-            :message_id => head[/Message-ID: (.*)/, 1],
-            :references => head[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || '',
-            :headers => head,
-            :body => body)
+          Post.import!(n, num.to_i, head, body)
           print '.'
         end
         
