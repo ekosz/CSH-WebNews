@@ -16,7 +16,7 @@ select_post = ->
   post_top = post_tr.position().top + scroll_top
   
   if post_top + 20 > scroll_top + view_height or post_top < scroll_top
-    $('#posts_list').scrollTop(post_tr.position().top - (view_height / 2))
+    $('#posts_list').scrollTop(post_top - (view_height / 2))
   
 $('#post_view').html '<%= j render(@post) %>'
 $('#post_view .full.headers').hide()
