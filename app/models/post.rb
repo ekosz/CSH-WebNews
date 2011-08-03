@@ -48,23 +48,21 @@ class Post < ActiveRecord::Base
   end
   
   def self.import!(newsgroup, number, headers, body)
+    attachment_stripped = false
+  
     if headers[/Content-Type: multipart/]
       boundary = headers[/Content-Type:.*boundary="?([^"]+)"?/, 1]
       match = /.*?#{boundary}\n(.*?)\n\n(.*?)\n(--)?#{boundary}/m.match(body)
       headers += "\n[Message part headers begin here]\n" + match[1]
       body = match[2]
-      if headers[/Content-Type:.*mixed/]
-        body += "\n\n[Attachment stripped by WebNews]"
-      end
+      attachment_stripped = true if headers[/Content-Type:.*mixed/]
     end
     
-    if headers[/Content-Type:.*format="?flowed"?/]
-      # FIXME: This doesn't *quite* conform to the RFC
-      body = body.gsub(/ \n /, ' ').gsub(/ \n>[> ]*/, ' ').
-        gsub(/^-- $/, '--').gsub(/ \n/, ' ').gsub(/^--$/, '-- ')
-    elsif headers[/Content-Transfer-Encoding: quoted-printable/]
-      body = body.unpack('M')[0]
-    end
+    body = body.unpack('M')[0] if headers[/Content-Transfer-Encoding: quoted-printable/]
+    body.encode!('UTF-8', headers[/Content-Type:.*charset="?([^"]+?)"?(;|$)/, 1],
+      :invalid => :replace, :undef => :replace) if headers[/Content-Type:.*charset/]
+    body = flowed_decode(body) if headers[/Content-Type:.*format="?flowed"?/]
+    body += "\n\n[Attachment stripped by WebNews]" if attachment_stripped
     
     create!(:newsgroup => newsgroup,
             :number => number,
@@ -75,5 +73,26 @@ class Post < ActiveRecord::Base
             :references => headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || '',
             :headers => headers,
             :body => body)
+  end
+  
+  # See RFC 3676 for "format=flowed" spec
+  
+  def self.flowed_decode(body)
+    new_body_lines = []
+    body.split("\n").each do |line|
+      quotes = line[/^>+/]
+      line.sub!(/^>+/, '')
+      line.sub!(/^ /, '')
+      if line != '-- ' and
+          new_body_lines.length > 0 and
+          !new_body_lines[-1][/^-- $/] and
+          new_body_lines[-1][/ $/] and
+          quotes == new_body_lines[-1][/^>+/]
+        new_body_lines[-1] << line
+      else
+        new_body_lines << quotes.to_s + line
+      end
+    end
+    return new_body_lines.join("\n")
   end
 end
