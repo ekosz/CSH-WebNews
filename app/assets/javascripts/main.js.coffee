@@ -9,6 +9,7 @@ window.onhashchange = ->
     if not location.hash.match $('#groups_list .selected').attr('data-name')
       $('#group_view').empty().append(spinner.clone())
       $('#post_view').empty()
+      $('#groups_list .selected').removeClass('selected')
 
 $(document).ready ->
   spinner = $('#loader .spinner').clone()
@@ -35,12 +36,6 @@ $('a.dialog_cancel').live 'click', ->
 
 $('input[type="submit"]').live 'click', ->
   @disabled = true
-
-$('#groups_list a').live 'click', ->
-  $('#group_view').empty().append(spinner.clone())
-  $('#post_view').empty()
-  $('#groups_list .selected').removeClass('selected')
-  $(this).closest('li').addClass('selected')
 
 $('#posts_list tbody tr').live 'click', ->
   tr = $(this)

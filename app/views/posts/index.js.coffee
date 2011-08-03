@@ -1,28 +1,36 @@
 <% if @full_layout %>
 
-$('#groups_list .selected').removeClass('selected')
-$('#groups_list li[data-name="<%= @newsgroup.name %>"]').addClass('selected')
+<% if not @showing %>
+document.title = '<%= @newsgroup.name %>'
+$('#post_view').empty()
+<% end %>
 
-<% if not @showing %>$('#post_view').empty()<% end %>
-$('#group_view').html '<%= j render(:partial => 'posts_list', :layout => 'group') %>'
+if $('#groups_list .selected').attr('data-name') != '<%= @newsgroup.name %>'
 
-$('#posts_list tbody .expanded').removeClass('expanded').addClass('expandable')
-$('#posts_list tbody tr[data-level!="1"]').hide()
-
-<% if not @showing %>document.title = '<%= @newsgroup.name %>'<% end %>
-
-$('#posts_list').scroll ->
-  view_height = $(this).height()
-  content_height = this.scrollHeight
-  scroll_top = $(this).scrollTop()
-  needs_load = not ( $('#posts_load').attr('data-loading') or $('#posts_load').attr('data-nomore') )
+  $('#groups_list .selected').removeClass('selected')
+  $('#groups_list li[data-name="<%= @newsgroup.name %>"]').addClass('selected')
   
-  if needs_load and scroll_top + view_height > content_height - 200
-    $('#posts_load').attr('data-loading', 'true')
-    $.getScript '<%= posts_path(@newsgroup.name) %>?from=' +
-        $('#posts_list tbody tr[data-level="1"]').last().attr('data-number')
-
-$('#posts_list').scroll()
+  $('#group_view').html '<%= j render(:partial => 'posts_list', :layout => 'group') %>'
+  
+  $('#posts_list tbody .expanded').removeClass('expanded').addClass('expandable')
+  $('#posts_list tbody tr[data-level!="1"]').hide()
+  
+  $('#posts_list').scroll ->
+    view_height = $(this).height()
+    content_height = this.scrollHeight
+    scroll_top = $(this).scrollTop()
+    needs_load = not ( $('#posts_load').attr('data-loading') or $('#posts_load').attr('data-nomore') )
+    
+    if needs_load and scroll_top + view_height > content_height - 200
+      $('#posts_load').attr('data-loading', 'true')
+      $.getScript '<%= posts_path(@newsgroup.name) %>?from=' +
+          $('#posts_list tbody tr[data-level="1"]').last().attr('data-number')
+  
+  $('#posts_list').scroll()
+  
+else
+  $('#posts_list').scrollTop(0)
+  $('#posts_list .selected').removeClass('selected')
 
 <% else %>
 
