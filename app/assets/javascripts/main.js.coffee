@@ -25,6 +25,9 @@ $(document).ready ->
     $('body').append(overlay.clone())
     $.getScript '/new_user'
 
+$('a[href="#"]').live 'click', ->
+  return false
+
 $('a[href^="#?/"]').live 'click', ->
   $('body').append(overlay.clone())
   $.getScript @href.replace('#?', '')
@@ -32,7 +35,6 @@ $('a[href^="#?/"]').live 'click', ->
 
 $('a.dialog_cancel').live 'click', ->
   $('#overlay').remove()
-  return false
 
 $('input[type="submit"]').live 'click', ->
   @disabled = true
