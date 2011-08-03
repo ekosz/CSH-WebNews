@@ -64,13 +64,27 @@ class Post < ActiveRecord::Base
     body = flowed_decode(body) if headers[/Content-Type:.*format="?flowed"?/]
     body += "\n\n[Attachment stripped by WebNews]" if attachment_stripped
     
+    subject = first_line = headers[/Subject: (.*)/, 1]
+    if subject[/Re:/]
+      body.each_line do |line|
+        if not (line.blank? or line[/^>/] or line[/(wrote|writes):$/] or
+            line[/^In article/] or line[/^On.*\d{4}.*:/] or line[/wrote in message/] or
+            line[/news:.*\.\.\.$/] or line[/^\W*snip\W*$/])
+          first_line = line.chomp
+          first_line = first_line.sub(/ +$/, '') + '...' if not first_line[/[.?!:] *$/]
+          break
+        end
+      end
+    end
+    
     create!(:newsgroup => newsgroup,
             :number => number,
-            :subject => headers[/Subject: (.*)/, 1],
+            :subject => subject,
             :author => headers[/From: (.*)/, 1],
             :date => DateTime.parse(headers[/Date: (.*)/, 1]),
             :message_id => headers[/Message-ID: (.*)/, 1],
             :references => headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || '',
+            :first_line => first_line,
             :headers => headers,
             :body => body)
   end
@@ -79,7 +93,8 @@ class Post < ActiveRecord::Base
   
   def self.flowed_decode(body)
     new_body_lines = []
-    body.split("\n").each do |line|
+    body.each_line do |line|
+      line.chomp!
       quotes = line[/^>+/]
       line.sub!(/^>+/, '')
       line.sub!(/^ /, '')
