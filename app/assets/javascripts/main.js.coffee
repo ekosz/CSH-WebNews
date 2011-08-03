@@ -6,14 +6,17 @@ window.onhashchange = ->
     $('#dialog_wrapper').remove()
     active_navigation.abort() if active_navigation
     active_navigation = $.getScript location.hash.replace('#!', '')
-    if not location.hash.match $('#groups_list .selected').attr('data-name')
+    
+    selected_group = $('#groups_list .selected').attr('data-name')
+    if not selected_group or not location.hash.match selected_group
       $('#group_view').empty().append(spinner.clone())
       $('#post_view').empty()
       $('#groups_list .selected').removeClass('selected')
 
 $(document).ready ->
-  spinner = $('#loader .spinner').clone()
-  overlay = $('#loader #overlay').clone()
+  window.chunks = {}
+  window.chunks.spinner = spinner = $('#loader .spinner').clone()
+  window.chunks.overlay = overlay = $('#loader #overlay').clone()
   $('#loader').remove()
   
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'

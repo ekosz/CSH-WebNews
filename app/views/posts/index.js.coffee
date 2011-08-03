@@ -5,7 +5,8 @@ document.title = '<%= @newsgroup.name %>'
 $('#post_view').empty()
 <% end %>
 
-if $('#groups_list .selected').attr('data-name') != '<%= @newsgroup.name %>'
+if <%= @showing ? 'true' : 'false' %> or
+    $('#groups_list .selected').attr('data-name') != '<%= @newsgroup.name %>'
 
   $('#groups_list .selected').removeClass('selected')
   $('#groups_list li[data-name="<%= @newsgroup.name %>"]').addClass('selected')

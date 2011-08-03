@@ -23,7 +23,7 @@ $('#post_view .full.headers').hide()
 document.title = '<%= @newsgroup.name %> \u00bb <%= j @post.subject %>'
 
 if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0
-  $('#group_view').empty().append(spinner.clone())
+  $('#group_view').empty().append(window.chunks.spinner.clone())
   $('#groups_list .selected').removeClass('selected')
   $('#groups_list li[data-name="<%= @newsgroup.name %>"]').addClass('selected')
   $.getScript '<%= posts_path(@newsgroup.name) %>?showing=<%= @post.number %>', -> select_post()
