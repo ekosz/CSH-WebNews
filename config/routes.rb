@@ -3,8 +3,8 @@ Webnews::Application.routes.draw do
   get '/home', :to => 'pages#home'
   get '/new_user', :to => 'pages#new_user'
   
-  get '/preferences',           :to => 'users#edit',    :as => :edit_user
-  put '/preferences',           :to => 'users#update',  :as => :update_user
+  get '/settings',              :to => 'users#edit',    :as => :edit_user
+  put '/settings',              :to => 'users#update',  :as => :update_user
   
   get '/compose',               :to => 'posts#new',     :as => :new_post
   post '/compose',              :to => 'posts#create',  :as => :create_post

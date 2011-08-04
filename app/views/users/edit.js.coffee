@@ -1,1 +1,1 @@
-$('#overlay').append('<%= j render('preferences') %>')
+$('#overlay').append('<%= j render('settings') %>')
