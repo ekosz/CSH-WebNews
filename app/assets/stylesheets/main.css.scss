@@ -284,6 +284,10 @@ input[type="submit"] { margin-right: 0; }
   .body {
     color: $text_dark;
     margin-top: 1em;
+    
+    blockquote                       { color: #077; }
+    blockquote blockquote            { color: #770; }
+    blockquote blockquote blockquote { color: #707; }
   }
 }
 

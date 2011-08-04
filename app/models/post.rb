@@ -47,6 +47,23 @@ class Post < ActiveRecord::Base
     ].join("\n")
   end
   
+  def html_body
+    hbody = ''
+    quote_depth = 0
+    body.each_line do |line|
+      depth_change = (line[/^>[> ]*/] || '').gsub(/\s/, '').length - quote_depth
+      line = CGI.escapeHTML(line.chomp)
+      if depth_change > 0
+        line = ('<blockquote>' * depth_change) + line
+      elsif depth_change < 0
+        line += ('</blockquote>' * depth_change.abs)
+      end
+      quote_depth += depth_change
+      hbody += line + "\n"
+    end
+    return hbody
+  end
+  
   def self.import!(newsgroup, number, headers, body)
     attachment_stripped = false
   
