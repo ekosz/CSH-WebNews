@@ -8,6 +8,11 @@
         <%= p.check_box :show_cancel, :checked => @current_user.preferences[:show_cancel] == '1' %>
         <%= p.label :show_cancel, 'Show control.cancel in the newsgroup list' %>
       </div>
+      <div class="form_element">
+        <%= p.label :time_zone, 'Display post times in this time zone:' %>
+        <%= p.time_zone_select :time_zone,
+          ActiveSupport::TimeZone.us_zones, :default => @current_user.time_zone %>
+      </div>
     <% end %>
     
     <p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field by using <a href="https://members.csh.rit.edu/profiles/">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>

@@ -8,4 +8,8 @@ class User < ActiveRecord::Base
   def email
     username + '@csh.rit.edu'
   end
+  
+  def time_zone
+    preferences[:time_zone] || 'Eastern Time (US & Canada)'
+  end
 end
