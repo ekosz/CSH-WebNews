@@ -59,8 +59,14 @@ class Post < ActiveRecord::Base
     end
     
     body = body.unpack('M')[0] if headers[/Content-Transfer-Encoding: quoted-printable/]
-    body.encode!('UTF-8', headers[/Content-Type:.*charset="?([^"]+?)"?(;|$)/, 1],
-      :invalid => :replace, :undef => :replace) if headers[/Content-Type:.*charset/]
+    if headers[/Content-Type:.*charset/]
+      body.encode!('UTF-8', headers[/Content-Type:.*charset="?([^"]+?)"?(;|$)/, 1],
+        :invalid => :replace, :undef => :replace)
+    elsif headers[/X-Newsreader: Microsoft Outlook Express/]
+      body.encode!('UTF-8', 'Windows-1252')
+    else
+      body.encode!('UTF-8', 'US-ASCII') # RFC 2045 Section 5.2
+    end
     body = flowed_decode(body) if headers[/Content-Type:.*format="?flowed"?/]
     body += "\n\n[Attachment stripped by WebNews]" if attachment_stripped
     
