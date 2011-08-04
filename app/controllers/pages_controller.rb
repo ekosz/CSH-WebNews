@@ -8,4 +8,17 @@ class PagesController < ApplicationController
   
   def new_user
   end
+  
+  def check_new
+  end
+  
+  private
+    
+    def get_newsgroups
+      @newsgroups = if @current_user.preferences[:show_cancel] == '1'
+        Newsgroup.all
+      else
+        Newsgroup.where(:status => 'y')
+      end
+    end
 end

@@ -24,12 +24,4 @@ class ApplicationController < ActionController::Base
         @current_user.touch
       end
     end
-    
-    def get_newsgroups
-      @newsgroups = if @current_user.preferences[:show_cancel] == '1'
-        Newsgroup.all
-      else
-        Newsgroup.where(:status => 'y')
-      end
-    end
 end

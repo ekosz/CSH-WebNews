@@ -2,6 +2,7 @@ Webnews::Application.routes.draw do
   root :to => 'pages#home'
   get '/home', :to => 'pages#home'
   get '/new_user', :to => 'pages#new_user'
+  get '/check_new', :to => 'pages#check_new'
   
   get '/settings',              :to => 'users#edit',    :as => :edit_user
   put '/settings',              :to => 'users#update',  :as => :update_user
