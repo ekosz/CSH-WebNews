@@ -88,7 +88,9 @@ class Post < ActiveRecord::Base
     body += "\n\n[Attachment stripped by WebNews]" if attachment_stripped
     
     subject = first_line = headers[/Subject: (.*)/, 1]
-    if subject[/Re:/]
+    references = headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || ''
+    
+    if subject[/^Re:/i] and references != '' and where(:message_id => references).exists?
       body.each_line do |line|
         if not (line.blank? or line[/^>/] or line[/(wrote|writes):$/] or
             line[/^In article/] or line[/^On.*\d{4}.*:/] or line[/wrote in message/] or
@@ -106,7 +108,7 @@ class Post < ActiveRecord::Base
             :author => headers[/From: (.*)/, 1],
             :date => DateTime.parse(headers[/Date: (.*)/, 1]),
             :message_id => headers[/Message-ID: (.*)/, 1],
-            :references => headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || '',
+            :references => references,
             :first_line => first_line,
             :headers => headers,
             :body => body)
