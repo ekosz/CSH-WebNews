@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   has_many :unread_posts, :through => :unread_post_entries, :source => :post
   
   serialize :preferences, Hash
-  attr_accessible :preferences
+  attr_readonly :username, :real_name
   
   def email
     username + '@csh.rit.edu'

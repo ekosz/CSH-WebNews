@@ -19,14 +19,14 @@ $(document).ready ->
   window.chunks.overlay = overlay = $('#loader #overlay').clone()
   $('#loader').remove()
   
+  if $('#new_user').length > 0
+    $('body').append(overlay.clone())
+    $.getScript '/new_user'
+  
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'
     location.hash = '#!/home'
   else
     window.onhashchange()
-    
-  if $('#new_user').length > 0
-    $('body').append(overlay.clone())
-    $.getScript '/new_user'
 
 $('a[href="#"]').live 'click', ->
   return false
