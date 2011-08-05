@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110801003628) do
+ActiveRecord::Schema.define(:version => 20110722021456) do
 
   create_table "newsgroups", :force => true do |t|
     t.string "name"
@@ -25,10 +25,13 @@ ActiveRecord::Schema.define(:version => 20110801003628) do
     t.datetime "date"
     t.string   "message_id"
     t.string   "references"
+    t.string   "first_line"
     t.text     "headers"
     t.text     "body"
-    t.string   "first_line"
   end
+
+  add_index "posts", ["message_id"], :name => "index_posts_on_message_id"
+  add_index "posts", ["newsgroup", "number"], :name => "index_posts_on_newsgroup_and_number"
 
   create_table "unread_post_entries", :force => true do |t|
     t.integer "user_id"

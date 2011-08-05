@@ -4,6 +4,7 @@ class CreateUnreadPostEntries < ActiveRecord::Migration
       t.references :user
       t.string :newsgroup
       t.integer :number
+      t.integer :personal_level
     end
   end
 end

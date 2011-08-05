@@ -8,8 +8,11 @@ class CreatePosts < ActiveRecord::Migration
       t.datetime :date
       t.string :message_id
       t.string :references
+      t.string :first_line
       t.text :headers
       t.text :body
     end
+    add_index :posts, [:newsgroup, :number]
+    add_index :posts, :message_id
   end
 end
