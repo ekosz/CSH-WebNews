@@ -7,7 +7,7 @@ class Post < ActiveRecord::Base
   end
   
   def children
-    Post.where(:references => message_id).order('date')
+    Post.where(:references => message_id, :newsgroup => newsgroup.name).order('date')
   end
   
   def thread_parent
@@ -65,32 +65,54 @@ class Post < ActiveRecord::Base
   end
   
   def self.import!(newsgroup, number, headers, body)
-    attachment_stripped = false
+    attachments_stripped = false
+    headers.gsub!(/\n( |\t)/, ' ')
   
-    if headers[/Content-Type: multipart/]
-      boundary = headers[/Content-Type:.*boundary="?([^"]+)"?/, 1]
+    if headers[/^Content-Type: multipart/i]
+      boundary = Regexp.escape(headers[/^Content-Type:.*boundary ?= ?"?([^"]+?)"?(;|$)/i, 1])
       match = /.*?#{boundary}\n(.*?)\n\n(.*?)\n(--)?#{boundary}/m.match(body)
-      headers += "\n[Message part headers begin here]\n" + match[1]
+      headers += "\n--- Message part headers follow ---\n" + match[1].gsub(/\n( |\t)/, ' ')
       body = match[2]
-      attachment_stripped = true if headers[/Content-Type:.*mixed/]
+      attachments_stripped = true if headers[/^Content-Type:.*mixed/i]
     end
     
-    body = body.unpack('M')[0] if headers[/Content-Transfer-Encoding: quoted-printable/]
-    if headers[/Content-Type:.*charset/]
-      body.encode!('UTF-8', headers[/Content-Type:.*charset="?([^"]+?)"?(;|$)/, 1],
-        :invalid => :replace, :undef => :replace)
-    elsif headers[/X-Newsreader: Microsoft Outlook Express/]
-      body.encode!('UTF-8', 'Windows-1252')
+    body = body.unpack('M')[0] if headers[/^Content-Transfer-Encoding: quoted-printable/i]
+    
+    if headers[/^Content-Type:.*(X-|unknown)/i]
+      body.encode!('UTF-8', 'US-ASCII', :invalid => :replace, :undef => :replace)
+    elsif headers[/^Content-Type:.*charset/i]
+      begin
+        body.encode!('UTF-8', headers[/^Content-Type:.*charset="?([^"]+?)"?(;|$)/i, 1],
+          :invalid => :replace, :undef => :replace)
+      rescue
+        body.encode!('UTF-8', 'US-ASCII', :invalid => :replace, :undef => :replace)
+      end
     else
-      body.encode!('UTF-8', 'US-ASCII') # RFC 2045 Section 5.2
+      begin
+        body.encode!('UTF-8', 'US-ASCII') # RFC 2045 Section 5.2
+      rescue
+        begin
+          body.encode!('UTF-8', 'Windows-1252')
+        rescue
+          body.encode!('UTF-8', 'US-ASCII', :invalid => :replace, :undef => :replace)
+        end
+      end
     end
-    body = flowed_decode(body) if headers[/Content-Type:.*format="?flowed"?/]
-    body += "\n\n[Attachment stripped by WebNews]" if attachment_stripped
     
-    subject = first_line = headers[/Subject: (.*)/, 1]
-    references = headers[/References: (.*((\n\t+.*)+)?)/, 1].to_s.split[-1] || ''
+    if body[/^begin(-base64)? \d{3} /]
+      body.gsub!(/^begin \d{3} .*?\nend\n/m, '')
+      body.gsub!(/^begin-base64 \d{3} .*?\n====\n/m, '')
+      attachments_stripped = true
+    end
     
-    if subject[/^Re:/i] and references != '' and where(:message_id => references).exists?
+    body = flowed_decode(body) if headers[/^Content-Type:.*format="?flowed"?/i]
+    body += "\n\n--- Attachments stripped by WebNews ---" if attachments_stripped
+    
+    subject = first_line = headers[/^Subject: (.*)/i, 1]
+    references = headers[/^References: (.*)/i, 1].to_s.split[-1] || ''
+    
+    if subject[/^Re:/i] and references != '' and
+        where(:newsgroup => newsgroup.name, :message_id => references).exists?
       body.each_line do |line|
         if not (line.blank? or line[/^>/] or line[/(wrote|writes):$/] or
             line[/^In article/] or line[/^On.*\d{4}.*:/] or line[/wrote in message/] or
@@ -105,9 +127,9 @@ class Post < ActiveRecord::Base
     create!(:newsgroup => newsgroup,
             :number => number,
             :subject => subject,
-            :author => headers[/From: (.*)/, 1],
-            :date => DateTime.parse(headers[/Date: (.*)/, 1]),
-            :message_id => headers[/Message-ID: (.*)/, 1],
+            :author => headers[/^From: (.*)/i, 1],
+            :date => DateTime.parse(headers[/^Date: (.*)/i, 1]),
+            :message_id => headers[/^Message-ID: (.*)/i, 1],
             :references => references,
             :first_line => first_line,
             :headers => headers,

@@ -7,7 +7,7 @@ class PostsController < ApplicationController
       @full_layout = false
       params[:from].to_i
     else
-      Post.maximum(:number) + 1
+      @newsgroup.posts.maximum(:number) + 1
     end
     
     if params[:showing]
