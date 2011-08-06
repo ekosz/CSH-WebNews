@@ -1,3 +1,19 @@
+<%
+html_body = ''
+quote_depth = 0
+post.body.each_line do |line|
+  depth_change = (line[/^>[> ]*/] || '').gsub(/\s/, '').length - quote_depth
+  line = html_escape(line.chomp)
+  if depth_change > 0
+    line = ('<blockquote>' * depth_change) + line
+  elsif depth_change < 0
+    line = ('</blockquote>' * depth_change.abs) + line
+  end
+  quote_depth += depth_change
+  html_body += line + "\n"
+end
+html_body = auto_link(html_body, :link => :urls, :sanitize => false)
+%>
 <div id="post_buttons">
   <a class="button" href="#">Post Reply</a>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Full Headers</a>
@@ -6,5 +22,5 @@
 <div id="post_content">
   <div class="headers"><%= post.short_headers %></div>
   <div class="full headers"><%= post.headers %></div>
-  <div class="body"><%= raw post.html_body %></div>
+  <div class="body"><%= raw html_body %></div>
 </div>
