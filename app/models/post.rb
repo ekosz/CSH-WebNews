@@ -1,6 +1,6 @@
 class Post < ActiveRecord::Base
-  set_primary_keys :newsgroup, :number
   belongs_to :newsgroup, :foreign_key => :newsgroup, :primary_key => :name
+  has_many :unread_post_entries, :dependent => :destroy
   
   def parent
     Post.where(:message_id => references, :newsgroup => newsgroup.name).first

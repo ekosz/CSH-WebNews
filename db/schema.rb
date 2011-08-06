@@ -31,14 +31,16 @@ ActiveRecord::Schema.define(:version => 20110722021456) do
   end
 
   add_index "posts", ["message_id"], :name => "index_posts_on_message_id"
-  add_index "posts", ["newsgroup", "number"], :name => "index_posts_on_newsgroup_and_number"
+  add_index "posts", ["newsgroup", "number"], :name => "index_posts_on_newsgroup_and_number", :unique => true
+  add_index "posts", ["references"], :name => "index_posts_on_references"
 
   create_table "unread_post_entries", :force => true do |t|
     t.integer "user_id"
-    t.string  "newsgroup"
-    t.integer "number"
+    t.integer "post_id"
     t.integer "personal_level"
   end
+
+  add_index "unread_post_entries", ["user_id", "post_id"], :name => "index_unread_post_entries_on_user_id_and_post_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "username"

@@ -12,7 +12,8 @@ class CreatePosts < ActiveRecord::Migration
       t.text :headers
       t.text :body
     end
-    add_index :posts, [:newsgroup, :number]
+    add_index :posts, [:newsgroup, :number], :unique => true
     add_index :posts, :message_id
+    add_index :posts, :references
   end
 end
