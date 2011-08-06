@@ -56,7 +56,7 @@ class Post < ActiveRecord::Base
       if depth_change > 0
         line = ('<blockquote>' * depth_change) + line
       elsif depth_change < 0
-        line += ('</blockquote>' * depth_change.abs)
+        line = ('</blockquote>' * depth_change.abs) + line
       end
       quote_depth += depth_change
       hbody += line + "\n"
