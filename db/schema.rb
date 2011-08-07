@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20110722021456) do
 
   create_table "unread_post_entries", :force => true do |t|
     t.integer "user_id"
+    t.integer "newsgroup_id"
     t.integer "post_id"
     t.integer "personal_level"
   end
