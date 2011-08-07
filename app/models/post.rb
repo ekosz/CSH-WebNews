@@ -30,8 +30,30 @@ class Post < ActiveRecord::Base
     return false
   end
   
+  def unread_for_user?(user)
+    unread_post_entries.where(:user_id => user.id).any?
+  end
+  
+  def mark_read_for_user(user)
+    entry = unread_post_entries.where(:user_id => user.id).first
+    if entry
+      entry.destroy
+      return true
+    else
+      return false
+    end
+  end
+  
+  def personal_class_for_user(user)
+    case
+      when authored_by?(user) then :mine
+      when parent && parent.authored_by?(user) then :mine_reply
+      when thread_parent.user_in_thread?(user) then :mine_in_thread
+    end
+  end
+  
   def author_name
-    author[/"?(.*?)"? <.*>/, 1] || author[/.* \((.*)\)/, 1] || author
+    author[/"?(.*?)"? ?<.*>/, 1] || author[/.* \((.*)\)/, 1] || author
   end
   
   def author_email

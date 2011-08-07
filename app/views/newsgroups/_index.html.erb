@@ -1,5 +1,10 @@
 <ul>
   <% @newsgroups.each do |group| %>
-    <li data-name="<%= group.name %>"><a href="#!<%= posts_path(group.name) %>"><%= group.name %></a></li>
+    <% unread = group.unread_for_user(@current_user) %>
+    <li class="<%= unread[:hclass] %>" data-name="<%= group.name %>" data-unread="<%= unread[:count] %>">
+      <a href="#!<%= posts_path(group.name) %>">
+        <%= group.name %><% if unread[:count] > 0 %><span class="unread_count"> (<%= unread[:count] %>)<% end %>
+      </a>
+    </li>
   <% end %>
 </ul>

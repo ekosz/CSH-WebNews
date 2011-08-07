@@ -29,6 +29,7 @@ class PostsController < ApplicationController
   
   def show
     @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
+    @post_was_unread = @post.mark_read_for_user(@current_user)
   end
   
   def new

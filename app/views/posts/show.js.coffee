@@ -27,3 +27,15 @@ if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0
   $.getScript '<%= posts_path(@newsgroup.name) %>?showing=<%= @post.number %>', -> select_post()
 else
   select_post()
+  $('#posts_list .selected').removeClass('unread')
+
+<% if @post_was_unread %>
+group = $('#groups_list li[data-name="<%= @newsgroup.name %>"]')
+group.removeClass()
+unread = <%= raw @newsgroup.unread_for_user(@current_user).to_json %>
+if unread.count > 0
+  group.addClass('unread').addClass(unread.hclass)
+  group.find('.unread_count').text(' (' + unread.count + ')')
+else
+  group.find('.unread_count').remove()
+<% end %>

@@ -4,6 +4,16 @@ class Newsgroup < ActiveRecord::Base
   
   default_scope :order => 'name'
   
+  def unread_for_user(user)
+    hclass = ''
+    count = unread_post_entries.where(:user_id => user.id).count
+    max_level = unread_post_entries.where(:user_id => user.id).maximum(:personal_level)
+    if max_level
+      hclass = 'unread ' + PERSONAL_CLASSES[max_level]
+    end
+    return { :count => count, :hclass => hclass }
+  end
+  
   def self.reload_all!
     UnreadPostEntry.delete_all
     Post.delete_all
@@ -55,7 +65,11 @@ class Newsgroup < ActiveRecord::Base
         to_import.each do |number|
           head = nntp.head(number)[1].join("\n")
           body = nntp.body(number)[1].join("\n")
-          Post.import!(n, number, head, body)
+          post = Post.import!(n, number, head, body)
+          User.find_each do |user|
+            UnreadPostEntry.create!(:user => user, :newsgroup => n, :post => post,
+              :personal_level => PERSONAL_CODES[post.personal_class_for_user(user)])
+          end
           print '.'
         end
         puts
