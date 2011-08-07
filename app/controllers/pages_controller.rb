@@ -16,12 +16,14 @@ class PagesController < ApplicationController
   private
   
     def sync_posts
-      if not File.exists?('tmp/syncing.txt') and
-          (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
-        FileUtils.touch('tmp/syncing.txt')
-        Newsgroup.sync_all!
-        FileUtils.rm('tmp/syncing.txt')
-        FileUtils.touch('tmp/lastsync.txt')
+      if not (action_name == 'home' and request.xhr?)
+        if not File.exists?('tmp/syncing.txt') and
+            (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
+          FileUtils.touch('tmp/syncing.txt')
+          Newsgroup.sync_all!
+          FileUtils.touch('tmp/lastsync.txt')
+          FileUtils.rm('tmp/syncing.txt')
+        end
       end
     end
     
