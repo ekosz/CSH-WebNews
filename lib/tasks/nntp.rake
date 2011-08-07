@@ -46,7 +46,7 @@ namespace :nntp do
         
         puts "Deleting #{to_delete.size} posts."
         to_delete.each do |number|
-          Post.where(:newsgroup => n.name, :number => number).destroy
+          Post.where(:newsgroup => n.name, :number => number).first.destroy
         end
         
         puts "Importing #{to_import.size} posts."
