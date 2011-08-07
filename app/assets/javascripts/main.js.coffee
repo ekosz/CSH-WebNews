@@ -6,11 +6,14 @@ window.onhashchange = ->
     active_navigation.abort() if active_navigation
     active_navigation = $.getScript location.hash.replace('#!', '')
     
-    selected_group = $('#groups_list .selected').attr('data-name')
-    if not selected_group or not location.hash.match selected_group
+    new_group = location.hash.split('/')[1]
+    loaded_group = $('#groups_list li[data-loaded]').attr('data-name')
+    if new_group != loaded_group
       $('#group_view').empty().append(window.chunks.spinner.clone())
       $('#post_view').empty()
+      $('#groups_list li[data-loaded]').removeAttr('data-loaded')
       $('#groups_list .selected').removeClass('selected')
+      $('#groups_list li[data-name="' + new_group + '"]').addClass('selected')
 
 $(document).ready ->
   window.chunks = {}

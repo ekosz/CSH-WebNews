@@ -6,10 +6,9 @@ $('#post_view').empty()
 <% end %>
 
 if <%= @showing ? 'true' : 'false' %> or
-    $('#groups_list .selected').attr('data-name') != '<%= @newsgroup.name %>'
+    $('#groups_list li[data-loaded]').attr('data-name') != '<%= @newsgroup.name %>'
 
-  $('#groups_list .selected').removeClass('selected')
-  $('#groups_list li[data-name="<%= @newsgroup.name %>"]').addClass('selected')
+  $('#groups_list li[data-name="<%= @newsgroup.name %>"]').attr('data-loaded', 'true')
   
   $('#group_view').html '<%= j render(:partial => 'posts_list', :layout => 'group') %>'
   
