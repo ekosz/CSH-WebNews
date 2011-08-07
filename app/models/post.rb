@@ -94,8 +94,12 @@ class Post < ActiveRecord::Base
     subject = first_line = headers[/^Subject: (.*)/i, 1]
     references = headers[/^References: (.*)/i, 1].to_s.split[-1] || ''
     
-    if subject[/^Re:/i] and references != '' and
-        where(:newsgroup => newsgroup.name, :message_id => references).exists?
+    if references != '' and
+        not where(:message_id => references, :newsgroup => newsgroup.name).exists?
+      references = ''
+    end
+    
+    if subject[/^Re:/i] and references != ''
       body.each_line do |line|
         if not (line.blank? or line[/^>/] or line[/(wrote|writes):$/] or
             line[/^In article/] or line[/^On.*\d{4}.*:/] or line[/wrote in message/] or
