@@ -1,4 +1,3 @@
-spinner = overlay = null
 active_navigation = null
 
 window.onhashchange = ->
@@ -9,18 +8,18 @@ window.onhashchange = ->
     
     selected_group = $('#groups_list .selected').attr('data-name')
     if not selected_group or not location.hash.match selected_group
-      $('#group_view').empty().append(spinner.clone())
+      $('#group_view').empty().append(window.chunks.spinner.clone())
       $('#post_view').empty()
       $('#groups_list .selected').removeClass('selected')
 
 $(document).ready ->
   window.chunks = {}
-  window.chunks.spinner = spinner = $('#loader .spinner').clone()
-  window.chunks.overlay = overlay = $('#loader #overlay').clone()
+  window.chunks.spinner = $('#loader .spinner').clone()
+  window.chunks.overlay = $('#loader #overlay').clone()
   $('#loader').remove()
   
   if $('#new_user').length > 0
-    $('body').append(overlay.clone())
+    $('body').append(window.chunks.overlay.clone())
     $.getScript '/new_user'
   
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'
@@ -32,7 +31,7 @@ $('a[href="#"]').live 'click', ->
   return false
 
 $('a[href^="#?/"]').live 'click', ->
-  $('body').append(overlay.clone())
+  $('body').append(window.chunks.overlay.clone())
   $.getScript @href.replace('#?', '')
   return false
 
