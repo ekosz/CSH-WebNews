@@ -1,7 +1,7 @@
 <table class="activity">
   <% @recent_posts.each do |post| %>
     <tr>
-      <td class="date"><%= post.date.strftime(DATE_FORMAT) %></td>
+      <td class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
       <td>
         <% if post.references == '' %>
           <span class="mine">Started thread
