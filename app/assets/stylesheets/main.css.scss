@@ -31,7 +31,7 @@ body, select, input, textarea { color: $text_normal; }
   text-overflow: ellipsis;
 }
 
-p, ul, .form_element {
+.form_element {
   margin-bottom: 1em;
 }
 
@@ -40,8 +40,14 @@ h2 {
   margin-bottom: 0.5em;
 }
 
+h3 {
+  font-size: 130%;
+  margin-bottom: 0.5em;
+}
+
 p {
   @include links;
+  margin-bottom: 2em;
 }
 
 a {
@@ -167,6 +173,27 @@ input[type="submit"] { margin-right: 0; }
   }
 }
 
+#dashboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  
+  table.activity {
+    a {
+      text-decoration: underline;
+      font-weight: bold;
+      &:hover { opacity: 0.7; }
+    }
+    td { padding-right: 10px; }
+    td.date { color: $text_light; }
+  }
+}
+
 #group_view {
   overflow: hidden;
   position: absolute;
@@ -183,17 +210,6 @@ input[type="submit"] { margin-right: 0; }
     left: 50%;
     margin-top: -12px;
     margin-left: -12px;
-  }
-  
-  #dashboard {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 10px;
   }
   
   #group_header {

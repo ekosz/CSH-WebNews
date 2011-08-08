@@ -3,8 +3,17 @@ class PagesController < ApplicationController
   before_filter :get_newsgroups, :only => [:home, :check_new]
 
   def home
-    @current_user.real_name = ENV['WEBAUTH_LDAP_CN']
-    @current_user.save!
+    respond_to do |wants|
+      wants.html {
+        @current_user.real_name = ENV['WEBAUTH_LDAP_CN']
+        @current_user.save!
+      }
+      wants.js {
+        @recent_posts = Post.
+          where('newsgroup not like ? and author like ?', 'control%', "%#{@current_user.email}%").
+          order('date DESC').limit(10)
+      }
+    end
   end
   
   def new_user

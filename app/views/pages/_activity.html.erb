@@ -1,0 +1,17 @@
+<table class="activity">
+  <% @recent_posts.each do |post| %>
+    <tr>
+      <td class="date"><%= post.date.strftime(DATE_FORMAT) %></td>
+      <td>
+        <% if post.references == '' %>
+          <span class="mine">Started thread
+        <% else %>Posted<% end %>
+        <a href="#!<%= post_path(post.newsgroup.name, post.number) %>"><%= post.subject %></a>
+        <% if post.references == '' %></span><% end %>
+      </td>
+      <td>
+        in <a href="#!<%= posts_path(post.newsgroup.name) %>"><%= post.newsgroup.name %></a>
+      </td>
+    </tr>
+  <% end %>
+</table>

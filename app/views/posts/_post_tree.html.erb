@@ -22,7 +22,7 @@ end
     <% level.times do %></div><% end %>
   </td>
   <td><%= post.author_name %></td>
-  <td><%= post.date.in_time_zone(@current_user.time_zone).strftime('%-m/%-d/%Y %-I:%M%P') %></td>
+  <td><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
 </tr>
 
 <% children.each do |child| %>
