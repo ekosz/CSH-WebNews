@@ -1,3 +1,4 @@
+@chunks = {}
 active_navigation = null
 
 window.onhashchange = ->
@@ -9,20 +10,19 @@ window.onhashchange = ->
     new_group = location.hash.split('/')[1]
     loaded_group = $('#groups_list li[data-loaded]').attr('data-name')
     if new_group != loaded_group
-      $('#group_view').empty().append(window.chunks.spinner.clone())
+      $('#group_view').empty().append(chunks.spinner.clone())
       $('#post_view').empty()
       $('#groups_list li[data-loaded]').removeAttr('data-loaded')
       $('#groups_list .selected').removeClass('selected')
       $('#groups_list li[data-name="' + new_group + '"]').addClass('selected')
 
 $(document).ready ->
-  window.chunks = {}
-  window.chunks.spinner = $('#loader .spinner').clone()
-  window.chunks.overlay = $('#loader #overlay').clone()
+  chunks.spinner = $('#loader .spinner').clone()
+  chunks.overlay = $('#loader #overlay').clone()
   $('#loader').remove()
   
   if $('#new_user').length > 0
-    $('body').append(window.chunks.overlay.clone())
+    $('body').append(chunks.overlay.clone())
     $.getScript '/new_user'
   
   if location.hash == '' or location.hash.substring(0, 3) != '#!/'
@@ -34,7 +34,7 @@ $('a[href="#"]').live 'click', ->
   return false
 
 $('a[href^="#?/"]').live 'click', ->
-  $('body').append(window.chunks.overlay.clone())
+  $('body').append(chunks.overlay.clone())
   $.getScript @href.replace('#?', '')
   return false
 
