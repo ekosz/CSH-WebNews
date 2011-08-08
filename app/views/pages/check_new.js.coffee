@@ -8,9 +8,11 @@ $('#groups_list [data-name="' + loaded + '"]').attr('data-loaded', 'true')
 
 unread_in_loaded = parseInt($('#groups_list [data-name="' + loaded + '"]').attr('data-unread'))
 new_in_loaded = unread_in_loaded - $('#posts_list .unread').length
-if new_in_loaded > 0
+if new_in_loaded > 0 and not $('#posts_load').attr('data-loading')
   posts = if new_in_loaded == 1 then 'post' else 'posts'
   $('#group_view .new_posts').text(new_in_loaded + ' new ' + posts + ' in this group!')
+else
+  $('#group_view .new_posts').text('')
 
 setTimeout (->
   $.getScript '/check_new'

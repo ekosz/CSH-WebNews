@@ -2,6 +2,20 @@
 @check_new_delay = 15000
 active_navigation = null
 
+@toggle_thread_expand = (tr) ->
+  if tr.find('.expandable').length > 0
+    tr.find('.expandable').removeClass('expandable').addClass('expanded')
+    for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
+      break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
+      $(child).show()
+      $(child).find('.expandable').removeClass('expandable').addClass('expanded')
+  else if tr.find('.expanded').length > 0 and tr.hasClass('selected')
+    tr.find('.expanded').removeClass('expanded').addClass('expandable')
+    for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
+      break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
+      $(child).hide()
+      $(child).find('.expanded').removeClass('expanded').addClass('expandable')
+
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
     $('#dialog_wrapper').remove()
@@ -59,18 +73,7 @@ $('#posts_list tbody tr').live 'click', ->
   if not tr.hasClass('selected')
     location.hash = tr.find('a').attr('href')
   
-  if tr.find('.expandable').length > 0
-    tr.find('.expandable').removeClass('expandable').addClass('expanded')
-    for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
-      break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
-      $(child).show()
-      $(child).find('.expandable').removeClass('expandable').addClass('expanded')
-  else if tr.find('.expanded').length > 0 and tr.hasClass('selected')
-    tr.find('.expanded').removeClass('expanded').addClass('expandable')
-    for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
-      break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
-      $(child).hide()
-      $(child).find('.expanded').removeClass('expanded').addClass('expandable')
+  toggle_thread_expand(tr)
   
   $('#posts_list .selected').removeClass('selected')
   tr.addClass('selected')

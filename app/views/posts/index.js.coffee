@@ -14,6 +14,8 @@ if <%= @showing ? 'true' : 'false' %> or
   
   $('#posts_list tbody .expanded').removeClass('expanded').addClass('expandable')
   $('#posts_list tbody tr[data-level!="1"]').hide()
+  for unread in $('#posts_list tbody .unread[data-level!="1"]')
+    toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
   
   $('#posts_list').scroll ->
     view_height = $(this).height()
@@ -39,8 +41,11 @@ $('#posts_list tbody').append '<%= j render(:partial => 'posts_list') %>'
 from_tr = $('#posts_list tr[data-number="<%= @from %>"]')
 from_tr.nextAll().find('.expanded').removeClass('expanded').addClass('expandable')
 from_tr.nextAll('[data-level!="1"]').hide()
+for unread in from_tr.nextAll('.unread[data-level!="1"]')
+  toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
 
 $('#posts_load').removeAttr('data-loading')
+
 <% if @more %>
 $('#posts_list').scroll()
 <% else %>
