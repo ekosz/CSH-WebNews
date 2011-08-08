@@ -31,6 +31,7 @@ else
 
 <% if @post_was_unread %>
 group = $('#groups_list li[data-name="<%= @newsgroup.name %>"]')
+selected = group.hasClass('selected')
 group.removeClass()
 unread = <%= raw @newsgroup.unread_for_user(@current_user).to_json %>
 if unread.count > 0
@@ -38,4 +39,5 @@ if unread.count > 0
   group.find('.unread_count').text(' (' + unread.count + ')')
 else
   group.find('.unread_count').remove()
+group.addClass('selected') if selected
 <% end %>
