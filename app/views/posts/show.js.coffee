@@ -1,7 +1,7 @@
-select_post = ->
+select_post = (showing) ->
   post_tr = $('#posts_list tr[data-number="<%= @post.number %>"]')
   
-  if post_tr.is(':hidden') or post_tr.attr('data-parent') == ''
+  if post_tr.is(':hidden') or (showing and post_tr.attr('data-parent') == '')
     parent = if post_tr.is(':hidden') then post_tr.prevAll('[data-level="1"]:first') else post_tr
     parent.find('.expandable').removeClass('expandable').addClass('expanded')
     for child in parent.nextUntil('[data-level="1"]')
@@ -24,9 +24,9 @@ document.title = '<%= @newsgroup.name %> \u00bb <%= j @post.subject %>'
 
 if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0
   $('#group_view').empty().append(chunks.spinner.clone())
-  $.getScript '<%= posts_path(@newsgroup.name) %>?showing=<%= @post.number %>', -> select_post()
+  $.getScript '<%= posts_path(@newsgroup.name) %>?showing=<%= @post.number %>', -> select_post(true)
 else
-  select_post()
+  select_post(false)
   $('#posts_list .selected').removeClass('unread')
 
 <% if @post_was_unread %>
