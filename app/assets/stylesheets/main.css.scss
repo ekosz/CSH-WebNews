@@ -5,7 +5,10 @@ $border_light: #ddd;
 $border_button: #bbb;
 
 $text_dark: #111;
+$text_normal: #444;
 $text_light: #999;
+
+body, select, input, textarea { color: $text_normal; }
 
 @mixin links {
   a {
@@ -52,7 +55,7 @@ textarea {
 b { font-weight: bold; }
 i { font-style: italic; }
 
-.unread { font-weight: bold; }
+.unread { color: $text_normal !important; font-weight: bold; }
 .mine { color: #0d0 !important; }
 .mine_reply { color: #f0f !important; }
 .mine_in_thread { color: #00f !important; }

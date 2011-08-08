@@ -64,7 +64,6 @@ input:invalid, textarea:invalid { border-radius: 1px; -moz-box-shadow: 0px 0px 5
 
 button {  width: auto; overflow: visible; }
 
-body, select, input, textarea {  color: #444; }
 h1, h2, h3, h4, h5, h6 { font-weight: bold; }
 
 .hidden { display: none !important; visibility: hidden !important; }
