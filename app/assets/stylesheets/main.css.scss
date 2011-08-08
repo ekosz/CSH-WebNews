@@ -1,12 +1,14 @@
 $pane_border: 1px solid #444;
 
 $bg_light: #f5f5f5;
+$bg_toolbar: #ddd;
 $border_light: #ddd;
 $border_button: #bbb;
 
 $text_dark: #111;
 $text_normal: #444;
 $text_light: #999;
+$link_hover: #77c;
 
 body, select, input, textarea { color: $text_normal; }
 
@@ -14,7 +16,7 @@ body, select, input, textarea { color: $text_normal; }
   a {
     color: $text_dark;
     text-decoration: underline;
-    &:hover { color: #77c; }
+    &:hover { color: $link_hover; }
   }
 }
 
@@ -64,7 +66,7 @@ i { font-style: italic; }
   height: 2.4em;
   line-height: 1.8em;
   padding: 0.6em 0 0 10px;
-  background-color: #ddd;
+  background-color: $bg_toolbar;
   border-bottom: 2px solid $border_button;
   
   h1 {
@@ -142,6 +144,26 @@ input[type="submit"] { margin-right: 0; }
   
   li {
     @include highlights;
+  }
+}
+
+#external_links {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  right: 80%;
+  bottom: 0;
+  color: $text_light;
+  background-color: $bg_toolbar;
+  border-top: 1px solid $border_button;
+  border-right: $pane_border;
+  text-align: center;
+  line-height: 1.5em;
+  padding-bottom: 0.25em;
+  a {
+    color: $text_normal;
+    text-decoration: none;
+    &:hover { color: $link_hover }
   }
 }
 
