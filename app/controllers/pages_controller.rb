@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   before_filter :sync_posts, :only => [:home, :check_new]
-  before_filter :get_newsgroups, :only => :home
+  before_filter :get_newsgroups, :only => [:home, :check_new]
 
   def home
     @current_user.real_name = ENV['WEBAUTH_LDAP_CN']

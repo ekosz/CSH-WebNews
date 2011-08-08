@@ -174,6 +174,14 @@ input[type="submit"] { margin-right: 0; }
   #group_buttons {
     float: right;
     margin-top: 1em;
+    
+    .new_posts {
+      color: #cc0;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-right: 14px;
+      &:hover { color: #dd0; }
+    }
   }
   
   #posts_list {

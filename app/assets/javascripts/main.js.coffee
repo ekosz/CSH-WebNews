@@ -1,4 +1,5 @@
 @chunks = {}
+@check_new_delay = 15000
 active_navigation = null
 
 window.onhashchange = ->
@@ -8,13 +9,13 @@ window.onhashchange = ->
     active_navigation = $.getScript location.hash.replace('#!', '')
     
     new_group = location.hash.split('/')[1]
-    loaded_group = $('#groups_list li[data-loaded]').attr('data-name')
+    loaded_group = $('#groups_list [data-loaded]').attr('data-name')
     if new_group != loaded_group
       $('#group_view').empty().append(chunks.spinner.clone())
       $('#post_view').empty()
-      $('#groups_list li[data-loaded]').removeAttr('data-loaded')
+      $('#groups_list [data-loaded]').removeAttr('data-loaded')
       $('#groups_list .selected').removeClass('selected')
-      $('#groups_list li[data-name="' + new_group + '"]').addClass('selected')
+      $('#groups_list [data-name="' + new_group + '"]').addClass('selected')
 
 $(document).ready ->
   chunks.spinner = $('#loader .spinner').clone()
@@ -29,6 +30,10 @@ $(document).ready ->
     location.hash = '#!/home'
   else
     window.onhashchange()
+  
+  setTimeout (->
+    $.getScript '/check_new'
+  ), check_new_delay
 
 $('a[href="#"]').live 'click', ->
   return false
@@ -43,6 +48,10 @@ $('a.dialog_cancel').live 'click', ->
 
 $('input[type="submit"]').live 'click', ->
   @disabled = true
+
+$('a.new_posts').live 'click', ->
+  $('#groups_list [data-loaded]').removeAttr('data-loaded')
+  window.onhashchange()
 
 $('#posts_list tbody tr').live 'click', ->
   tr = $(this)
