@@ -1,2 +1,31 @@
+<div id="dashboard">
 <h2 id="dashboard_head">Home</h2>
-<p>There isn't really anything to see here yet. Click a newsgroup!</p>
+
+<%
+unread = @current_user.unread_count
+unread_thread = @current_user.unread_count_in_thread
+unread_reply = @current_user.unread_count_in_reply
+
+unread_line = ''
+if unread == 0
+  unread_line = 'You have no unread posts.'
+else
+  unread_line += "You have <span class=\"unread\">#{pluralize(unread, 'unread post')}</span>"
+  if unread_thread + unread_reply > 0
+    unread_line += ' ('
+    if unread_thread > 0
+      unread_line += "<span class=\"mine_in_thread\">#{unread_thread} in threads you've posted in</span>"
+      unread_line += ', ' if unread_reply > 0
+    end
+    if unread_reply > 0
+      unread_line += "<span class=\"mine_reply\">#{unread_reply} in reply to your posts</span>"
+    end
+    unread_line += ')'
+  end
+  unread_line += '.'
+end
+%>
+
+<p><%= raw unread_line %></p>
+
+</div>
