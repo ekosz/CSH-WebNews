@@ -5,8 +5,16 @@
     
     <%= f.fields_for :preferences do |p| %>
       <div class="form_element">
-        <%= p.check_box :show_cancel, :checked => @current_user.preferences[:show_cancel] == '1' %>
-        <%= p.label :show_cancel, 'Show control.cancel in the newsgroup list' %>
+        <%= p.check_box :unread_in_test, :checked => @current_user.unread_in_test? %>
+        <%= p.label :unread_in_test, 'Show unread posts in csh.test' %>
+      </div>
+      <div class="form_element">
+        <%= p.check_box :unread_in_control, :checked => @current_user.unread_in_control? %>
+        <%= p.label :unread_in_control, 'Show unread posts in control groups (e.g. control.cancel)' %>
+      </div>
+      <div class="form_element">
+        <%= p.check_box :unread_in_lists, :checked => @current_user.unread_in_lists? %>
+        <%= p.label :unread_in_lists, 'Show unread posts in mailing list groups (e.g. csh.lists.alumni)' %>
       </div>
       <div class="form_element">
         <%= p.label :time_zone, 'Display post times in this time zone:' %>
@@ -16,6 +24,7 @@
     <% end %>
     
     <p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field by using <a href="https://members.csh.rit.edu/profiles/">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>
+    
     <div class="dialog_buttons">
       <%= f.submit 'Save', :class => 'button green' %>
       <a href="#" class="button red dialog_cancel">Cancel</a>

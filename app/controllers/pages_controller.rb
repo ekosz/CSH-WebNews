@@ -37,7 +37,11 @@ class PagesController < ApplicationController
   end
   
   private
-  
+    
+    def get_newsgroups
+      @newsgroups = Newsgroup.all
+    end
+    
     def sync_posts
       if not (action_name == 'home' and request.xhr?)
         if not File.exists?('tmp/syncing.txt') and
@@ -47,14 +51,6 @@ class PagesController < ApplicationController
           FileUtils.touch('tmp/lastsync.txt')
           FileUtils.rm('tmp/syncing.txt')
         end
-      end
-    end
-    
-    def get_newsgroups
-      @newsgroups = if @current_user.preferences[:show_cancel] == '1'
-        Newsgroup.all
-      else
-        Newsgroup.where(:status => 'y')
       end
     end
 end
