@@ -246,6 +246,7 @@ input[type="submit"] { margin-right: 0; }
   #group_buttons {
     float: right;
     margin-top: 1em;
+    margin-right: 20px;
     
     .new_posts {
       color: #cc0;
@@ -339,6 +340,19 @@ input[type="submit"] { margin-right: 0; }
     right: 20px;
   }
   
+  h3 {
+    margin-bottom: 0;
+  }
+  
+  .byline {
+    color: $text_light;
+    font-weight: bold;
+    padding: 0.25em 0;
+    border-bottom: 1px solid $border_light;
+    
+    .author { color: $text_normal; }
+  }
+  
   #post_content {
     overflow-x: hidden;
     overflow-y: auto;
@@ -355,9 +369,11 @@ input[type="submit"] { margin-right: 0; }
     font-family: monospace;
     white-space: pre-wrap;
     word-wrap: break-word;
+    padding-right: 10px;
   }
   
   .headers {
+    margin-top: 1em;
     color: $text_light;
   }
   

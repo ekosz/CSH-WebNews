@@ -19,7 +19,7 @@ select_post = (showing) ->
     $('#posts_list').scrollTop(post_top - (view_height / 2))
   
 $('#post_view').html '<%= j render(@post) %>'
-$('#post_view .full.headers').hide()
+$('#post_view .headers').hide()
 document.title = '<%= @newsgroup.name %> \u00bb <%= j @post.subject %>'
 
 if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0

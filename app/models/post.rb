@@ -70,15 +70,6 @@ class Post < ActiveRecord::Base
     end
   end
   
-  def short_headers
-    [
-      headers[/From: .*/],
-      headers[/Date: .*/],
-      headers[/Subject: .*/],
-      headers[/Message-ID: .*/]
-    ].join("\n")
-  end
-  
   def kill_references
     # Sub-optimal, should re-parent to next reference up the chain
     # (but posts getting canceled when they already have replies is rare)

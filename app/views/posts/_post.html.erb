@@ -17,11 +17,15 @@ html_body = auto_link(html_body, :link => :urls, :sanitize => false)
 <div id="post_buttons">
   <a class="button"
     href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
-  <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Full Headers</a>
+  <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
   <% if post.authored_by?(@current_user) %><a class="button red" href="#">Cancel Post</a><% end %>
 </div>
 <div id="post_content">
-  <div class="headers"><%= post.short_headers %></div>
-  <div class="full headers"><%= post.headers %></div>
+  <h3><%= post.subject %></h3>
+  <div class="byline">Posted
+    <span class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></span>
+    by <span class="author"><%= post.author %></span>
+  </div>
+  <div class="headers"><%= post.headers %></div>
   <div class="body"><%= raw html_body %></div>
 </div>
