@@ -1,6 +1,7 @@
 class Post < ActiveRecord::Base
   belongs_to :newsgroup, :foreign_key => :newsgroup, :primary_key => :name
   has_many :unread_post_entries, :dependent => :destroy
+  before_destroy :kill_references
   
   def parent
     Post.where(:message_id => references, :newsgroup => newsgroup.name).first
@@ -67,6 +68,14 @@ class Post < ActiveRecord::Base
       headers[/Subject: .*/],
       headers[/Message-ID: .*/]
     ].join("\n")
+  end
+  
+  def kill_references
+    # Sub-optimal, should re-parent to next reference up the chain
+    # (but posts getting canceled when they already have replies is rare)
+    Post.where(:references => message_id).each do |post|
+      post.update_attributes(:references => '', :first_line => post.subject)
+    end
   end
   
   def self.import!(newsgroup, number, headers, body)
