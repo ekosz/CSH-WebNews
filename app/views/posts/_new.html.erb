@@ -1,0 +1,25 @@
+<div id="dialog">
+  <h2><%= params[:number] ? 'Post Reply' : 'Post New' %></h2>
+  
+  <%= form_for @new_post,
+      :url => create_post_path, :html => { :method => 'post'}, :remote => true do |f| %>
+    
+    <div class="form_element">
+      <%= f.label :newsgroup, 'Newsgroup:' %>
+      <%= f.select :newsgroup, @newsgroups.map{ |n| [n.name, n.name] }, :selected => @newsgroup.name %>
+    </div>
+    
+    <div class="form_element">
+      <%= f.text_field :subject, :placeholder => 'Subject' %>
+    </div>
+    
+    <div class="form_element">
+      <%= f.text_area :body %>
+    </div>
+    
+    <div class="dialog_buttons">
+      <%= f.submit 'Post', :class => 'button green' %>
+      <a href="#" class="button red dialog_cancel">Cancel</a>
+    </div>
+  <% end %>
+</div>

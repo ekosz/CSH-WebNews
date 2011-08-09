@@ -1,6 +1,8 @@
 <div id="group_buttons">
   <a class="new_posts" href="#!<%= posts_path(@newsgroup.name) %>"></a>
-  <a class="button" href="#">Post New</a>
+  <% if @newsgroup.status == 'y' %>
+    <a class="button" href="#?<%= new_post_path(:newsgroup => @newsgroup.name) %>">Post New</a>
+  <% end %>
   <a class="button" href="#">Search Group</a>
 </div>
 <div id="group_header">

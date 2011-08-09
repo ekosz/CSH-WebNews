@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
-  before_filter :get_newsgroup, :only => [:index, :show]
+  before_filter :get_newsgroup, :only => [:index, :show, :new]
+  before_filter :get_post, :only => [:show, :new]
 
   def index
     @full_layout = true
@@ -28,11 +29,13 @@ class PostsController < ApplicationController
   end
   
   def show
-    @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
     @post_was_unread = @post.mark_read_for_user(@current_user)
   end
   
   def new
+    @newsgroups = Newsgroup.where(:status => 'y')
+    @new_post = Post.new(:newsgroup => @newsgroup)
+    @new_post.subject = 'Re: ' + @post.subject.sub(/^Re: ?/, '') if @post
   end
   
   def create
@@ -44,6 +47,14 @@ class PostsController < ApplicationController
   private
   
     def get_newsgroup
-      @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
+      if params[:newsgroup]
+        @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
+      end
+    end
+    
+    def get_post
+      if params[:newsgroup] and params[:number]
+        @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
+      end
     end
 end

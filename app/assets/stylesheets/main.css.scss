@@ -68,6 +68,10 @@ i { font-style: italic; }
     @include links;
     margin-bottom: 1.25em;
   }
+  
+  input[type=text], textarea {
+    width: 99%;
+  }
 }
 
 #toolbar {
