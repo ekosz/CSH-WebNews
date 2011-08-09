@@ -1,17 +1,17 @@
+<h3>Active Threads</h3>
+<p class="explain">Threads with new replies in the past 7 days</p>
+
 <table class="activity">
-  <% @recent_posts.each do |post| %>
-    <tr>
-      <td class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
-      <td>
-        <% if post.references == '' %>
-          <span class="mine">Started thread
-        <% else %>Posted<% end %>
-        <a href="#!<%= post_path(post.newsgroup.name, post.number) %>"><%= post.subject %></a>
-        <% if post.references == '' %></span><% end %>
-      </td>
-      <td>
-        in <a href="#!<%= posts_path(post.newsgroup.name) %>"><%= post.newsgroup.name %></a>
-      </td>
-    </tr>
+  <% @active_threads.each do |post, date| %>
+    <%= render :partial => 'activity_row', :locals => { :post => post, :date => date } %>
+  <% end %>
+</table>
+
+<h3>New Threads</h3>
+<p class="explain">Threads started in the past 7 days with no replies yet</p>
+
+<table class="activity">
+  <% @recent_threads.each do |post| %>
+    <%= render :partial => 'activity_row', :locals => { :post => post, :date => post.date } %>
   <% end %>
 </table>

@@ -4,15 +4,29 @@ class PagesController < ApplicationController
 
   def home
     respond_to do |wants|
-      wants.html {
+      
+      wants.html do
         @current_user.real_name = ENV['WEBAUTH_LDAP_CN']
         @current_user.save!
-      }
-      wants.js {
-        @recent_posts = Post.
-          where('newsgroup not like ? and author like ?', 'control%', "%#{@current_user.email}%").
-          order('date DESC').limit(10)
-      }
+      end
+      
+      wants.js do
+        recent_posts = Post.
+          where('newsgroup not like ? and date > ?', 'control%', 1.week.ago).
+          order('date DESC')
+        @recent_threads = recent_posts.where(:references => '')
+        recent_replies = recent_posts - @recent_threads
+        
+        @active_threads = {}
+        recent_replies.each do |post|
+          thread = post.thread_parent
+          if @active_threads[thread].nil? or @active_threads[thread] < post.date
+            @active_threads[thread] = post.date
+            @recent_threads -= [thread]
+          end
+        end
+      end
+      
     end
   end
   
