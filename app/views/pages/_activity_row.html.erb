@@ -1,6 +1,6 @@
 <tr>
-  <td class="subject">
-    <a class="<%= post.personal_class_for_user(@current_user) %>"
+  <td>
+    <a class="<%= post.personal_class_for_user(@current_user) %><%= unread ? ' unread' : '' %>"
       href="#!<%= post_path(post.newsgroup.name, post.number) %>"><%= post.subject %></a>
   </td>
   <td><%= date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>

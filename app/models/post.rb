@@ -3,6 +3,14 @@ class Post < ActiveRecord::Base
   has_many :unread_post_entries, :dependent => :destroy
   before_destroy :kill_references
   
+  def author_name
+    author[/"?(.*?)"? ?<.*>/, 1] || author[/.* \((.*)\)/, 1] || author
+  end
+  
+  def author_email
+    author[/"?.*?"? <(.*)>/, 1] || author[/(.*) \(.*\)/, 1] || nil
+  end
+  
   def parent
     Post.where(:message_id => references, :newsgroup => newsgroup.name).first
   end
@@ -45,20 +53,21 @@ class Post < ActiveRecord::Base
     end
   end
   
+  def thread_unread_for_user?(user)
+    if unread_for_user?(user)
+      return true
+    elsif children.count > 0
+      return true if children.reduce(false){ |memo, child| memo && child.thread_unread_for_user?(user) }
+    end
+    return false
+  end
+  
   def personal_class_for_user(user)
     case
       when authored_by?(user) then :mine
       when parent && parent.authored_by?(user) then :mine_reply
       when thread_parent.user_in_thread?(user) then :mine_in_thread
     end
-  end
-  
-  def author_name
-    author[/"?(.*?)"? ?<.*>/, 1] || author[/.* \((.*)\)/, 1] || author
-  end
-  
-  def author_email
-    author[/"?.*?"? <(.*)>/, 1] || author[/(.*) \(.*\)/, 1] || nil
   end
   
   def short_headers

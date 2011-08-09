@@ -3,7 +3,8 @@
 
 <table class="activity">
   <% @active_threads.each do |post, date| %>
-    <%= render :partial => 'activity_row', :locals => { :post => post, :date => date } %>
+    <%= render :partial => 'activity_row', :locals =>
+      { :post => post, :date => date, :unread => post.thread_unread_for_user?(@current_user) } %>
   <% end %>
 </table>
 
@@ -12,6 +13,7 @@
 
 <table class="activity">
   <% @recent_threads.each do |post| %>
-    <%= render :partial => 'activity_row', :locals => { :post => post, :date => post.date } %>
+    <%= render :partial => 'activity_row', :locals =>
+      { :post => post, :date => post.date, :unread => post.unread_for_user?(@current_user) } %>
   <% end %>
 </table>
