@@ -11,10 +11,12 @@ class PagesController < ApplicationController
       end
       
       wants.js do
-        recent_posts = Post.
-          where('newsgroup not like ? and date > ?', 'control%', 1.week.ago).
-          order('date DESC')
-        @recent_threads = recent_posts.where(:references => '')
+        recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
+        recent_posts.reject!{ |post| post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] }
+        
+        # Careful, using recent_posts.where(...) would operate on the
+        # original result set, not the modified one created by reject!
+        @recent_threads = recent_posts.reject{ |post| post.references != '' }
         recent_replies = recent_posts - @recent_threads
         
         @active_threads = {}
