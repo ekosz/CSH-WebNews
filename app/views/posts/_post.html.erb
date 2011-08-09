@@ -24,7 +24,9 @@ html_body = auto_link(html_body, :link => :urls, :sanitize => false)
   <h3><%= post.subject %></h3>
   <div class="byline">Posted
     <span class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></span>
-    by <span class="author"><%= post.author %></span>
+    by <span class="author">
+      <%= post.author_name %><%= ' <' + post.author_email + '>' if post.author_email %>
+    </span>
   </div>
   <div class="headers"><%= post.headers %></div>
   <div class="body"><%= raw html_body %></div>
