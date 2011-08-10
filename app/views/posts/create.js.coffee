@@ -1,6 +1,7 @@
 <% if @error_text %>
 
-$('#dialog input[type="submit"]').removeAttr('disabled')
+$('#dialog .buttons').show()
+$('#dialog .loading').text('')
 $('#dialog .errors').text('<%= raw j(@error_text) %>')
 
 <% else %>

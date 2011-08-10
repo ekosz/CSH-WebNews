@@ -63,7 +63,9 @@ $('a.dialog_cancel').live 'click', ->
   $('#overlay').remove()
 
 $('input[type="submit"]').live 'click', ->
-  @disabled = true
+  $('#dialog .buttons').hide()
+  $('#dialog .loading').text('Working...')
+  $('#dialog .errors').text('')
 
 $('a.new_posts').live 'click', ->
   $('#groups_list [data-loaded]').removeAttr('data-loaded')

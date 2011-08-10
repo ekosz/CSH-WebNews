@@ -406,13 +406,15 @@ input[type="submit"] { margin-right: 0; }
     margin-top: 10px;
   }
   
-  .errors {
-    color: #d00;
+  .loading, .errors {
     font-weight: bold;
     text-align: right;
     margin-top: 10px;
     margin-right: 8px;
   }
+  
+  .loading { color: #0b0; }
+  .errors { color: #d00; }
   
   p, ul {
     @include links;
