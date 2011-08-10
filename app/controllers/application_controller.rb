@@ -1,13 +1,24 @@
 class ApplicationController < ActionController::Base
   require 'net/nntp'
   protect_from_forgery
-  before_filter :authenticate, :get_or_create_user
+  before_filter :authenticate, :check_maintenance, :get_or_create_user
   
   private
   
     def authenticate
       if not ENV['WEBAUTH_USER']
         render :file => "#{RAILS_ROOT}/public/auth.html"
+      end
+    end
+    
+    def check_maintenance
+      if File.exists?('tmp/maintenance.txt')
+        @no_script = true
+        @explanation = File.read('tmp/maintenance.txt')
+        respond_to do |wants|
+          wants.html { render 'shared/maintenance' }
+          wants.js { render 'shared/maintenance' }
+        end
       end
     end
   

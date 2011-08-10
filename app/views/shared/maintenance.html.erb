@@ -1,0 +1,9 @@
+<div id="overlay_dimmer"></div>
+<div id="dialog">
+  <h2>WebNews is down for maintenance</h2>
+  <p><%= !@explanation.blank? ? @explanation : "No explanation was provided for this maintenance, but hopefully we'll be back online soon." %></p>
+  <div class="dialog_buttons">
+    <a class="button" href="#" onclick="location.reload(); return false;">Refresh</a>
+    <a class="button" href="https://members.csh.rit.edu/">Go to Members Portal</a>
+  </div>
+</div>
