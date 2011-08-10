@@ -46,7 +46,7 @@ $(document).ready ->
     window.onhashchange()
   
   setTimeout (->
-    $.getScript '/check_new'
+    $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
   ), check_new_delay
 
 $('a[href="#"]').live 'click', ->

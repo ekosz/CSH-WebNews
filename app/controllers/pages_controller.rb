@@ -12,22 +12,7 @@ class PagesController < ApplicationController
       end
       
       wants.js do
-        recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
-        recent_posts.reject!{ |post| post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] }
-        
-        # Careful, using recent_posts.where(...) would operate on the
-        # original result set, not the modified one created by reject!
-        @recent_threads = recent_posts.reject{ |post| post.references != '' }
-        recent_replies = recent_posts - @recent_threads
-        
-        @active_threads = {}
-        recent_replies.each do |post|
-          thread = post.thread_parent
-          if @active_threads[thread].nil? or @active_threads[thread] < post.date
-            @active_threads[thread] = post.date
-            @recent_threads -= [thread]
-          end
-        end
+        get_activity_feeds
       end
       
     end
@@ -39,12 +24,35 @@ class PagesController < ApplicationController
   def check_new
     sync_posts
     get_next_unread_post
+    if params[:location] == '#!/home'
+      @dashboard_active = true
+      get_activity_feeds
+    end
   end
   
   private
     
     def get_newsgroups
       @newsgroups = Newsgroup.all
+    end
+    
+    def get_activity_feeds
+      recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
+      recent_posts.reject!{ |post| post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] }
+      
+      # Careful, using recent_posts.where(...) would operate on the
+      # original result set, not the modified one created by reject!
+      @recent_threads = recent_posts.reject{ |post| post.references != '' }
+      recent_replies = recent_posts - @recent_threads
+      
+      @active_threads = {}
+      recent_replies.each do |post|
+        thread = post.thread_parent
+        if @active_threads[thread].nil? or @active_threads[thread] < post.date
+          @active_threads[thread] = post.date
+          @recent_threads -= [thread]
+        end
+      end
     end
     
     def sync_posts

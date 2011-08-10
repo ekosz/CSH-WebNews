@@ -16,6 +16,10 @@ else
 
 $('#next_unread').attr('href', '<%= next_unread_href %>')
 
+<% if @dashboard_active %>
+$('#group_view').html '<%= j render('dashboard') %>'
+<% end %>
+
 setTimeout (->
-  $.getScript '/check_new'
+  $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
 ), check_new_delay
