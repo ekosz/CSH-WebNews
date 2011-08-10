@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(:version => 20110722021456) do
     t.string   "author"
     t.datetime "date"
     t.string   "message_id"
-    t.string   "references"
+    t.string   "parent_id"
     t.string   "first_line"
     t.text     "headers"
     t.text     "body"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(:version => 20110722021456) do
 
   add_index "posts", ["message_id"], :name => "index_posts_on_message_id"
   add_index "posts", ["newsgroup", "number"], :name => "index_posts_on_newsgroup_and_number", :unique => true
-  add_index "posts", ["references"], :name => "index_posts_on_references"
+  add_index "posts", ["parent_id"], :name => "index_posts_on_parent_id"
 
   create_table "unread_post_entries", :force => true do |t|
     t.integer "user_id"

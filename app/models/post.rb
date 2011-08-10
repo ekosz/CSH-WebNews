@@ -1,7 +1,7 @@
 class Post < ActiveRecord::Base
   belongs_to :newsgroup, :foreign_key => :newsgroup, :primary_key => :name
   has_many :unread_post_entries, :dependent => :destroy
-  before_destroy :kill_references
+  before_destroy :kill_parent_id
   
   def author_name
     author[/"?(.*?)"? ?<.*>/, 1] || author[/.* \((.*)\)/, 1] || author
@@ -18,15 +18,15 @@ class Post < ActiveRecord::Base
   end
   
   def parent
-    Post.where(:message_id => references, :newsgroup => newsgroup.name).first
+    Post.where(:message_id => parent_id).first
   end
   
   def children
-    Post.where(:references => message_id, :newsgroup => newsgroup.name).order('date')
+    Post.where(:parent_id => message_id).order('date')
   end
   
   def thread_parent
-    if references == ''
+    if parent_id == ''
       self
     else
       parent.thread_parent
@@ -76,11 +76,11 @@ class Post < ActiveRecord::Base
     end
   end
   
-  def kill_references
+  def kill_parent_id
     # Sub-optimal, should re-parent to next reference up the chain
     # (but posts getting canceled when they already have replies is rare)
-    Post.where(:references => message_id).each do |post|
-      post.update_attributes(:references => '', :first_line => post.subject)
+    Post.where(:parent_id => message_id).each do |post|
+      post.update_attributes(:parent_id => '', :first_line => post.subject)
     end
   end
   
@@ -126,23 +126,26 @@ class Post < ActiveRecord::Base
     end
     
     body = flowed_decode(body) if headers[/^Content-Type:.*format="?flowed"?/i]
+    
+    body.rstrip!
     body += "\n\n--- Attachments stripped by WebNews ---" if attachments_stripped
     
     subject = first_line = headers[/^Subject: (.*)/i, 1]
-    references = headers[/^References: (.*)/i, 1].to_s.split[-1] || ''
+    parent_id = headers[/^References: (.*)/i, 1].to_s.split[-1] || ''
     
-    if references != '' and
-        not where(:message_id => references, :newsgroup => newsgroup.name).exists?
-      references = ''
+    if parent_id != '' and
+        not where(:message_id => parent_id, :newsgroup => newsgroup.name).exists?
+      parent_id = ''
     end
     
-    if subject[/^Re:/i] and references != ''
+    if subject[/^Re:/i] and parent_id != ''
       body.each_line do |line|
         if not (line.blank? or line[/^>/] or line[/(wrote|writes):$/] or
             line[/^In article/] or line[/^On.*\d{4}.*:/] or line[/wrote in message/] or
             line[/news:.*\.\.\.$/] or line[/^\W*snip\W*$/])
-          first_line = line.chomp
-          first_line = first_line.sub(/ +$/, '') + '...' if not first_line[/[.?!:] *$/]
+          first_line = line.sub(/ +$/, '')
+          first_line = first_line.rstrip + '...' if first_line[/\w\n/]
+          first_line.rstrip!
           break
         end
       end
@@ -154,7 +157,7 @@ class Post < ActiveRecord::Base
             :author => headers[/^From: (.*)/i, 1],
             :date => DateTime.parse(headers[/^Date: (.*)/i, 1]),
             :message_id => headers[/^Message-ID: (.*)/i, 1],
-            :references => references,
+            :parent_id => parent_id,
             :first_line => first_line,
             :headers => headers,
             :body => body)

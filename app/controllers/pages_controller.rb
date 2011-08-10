@@ -42,7 +42,7 @@ class PagesController < ApplicationController
       
       # Careful, using recent_posts.where(...) would operate on the
       # original result set, not the modified one created by reject!
-      @recent_threads = recent_posts.reject{ |post| post.references != '' }
+      @recent_threads = recent_posts.reject{ |post| post.parent_id != '' }
       recent_replies = recent_posts - @recent_threads
       
       @active_threads = {}

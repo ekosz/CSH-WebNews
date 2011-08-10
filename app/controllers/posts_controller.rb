@@ -17,14 +17,14 @@ class PostsController < ApplicationController
     if params[:showing]
       @showing = @newsgroup.posts.find_by_number(params[:showing])
       @posts = @newsgroup.posts.
-        where('"references" = ? and number >= ?', '', @showing.number).
+        where('parent_id = ? and number >= ?', '', @showing.number).
         order('number DESC')
       @posts += @newsgroup.posts.
-        where('"references" = ? and number < ?', '', @showing.number).
+        where('parent_id = ? and number < ?', '', @showing.number).
         order('number DESC').limit(10)
     else
       @posts = @newsgroup.posts.
-        where('"references" = ? and number < ?', '', @from).
+        where('parent_id = ? and number < ?', '', @from).
         order('number DESC').limit(10)
     end
     

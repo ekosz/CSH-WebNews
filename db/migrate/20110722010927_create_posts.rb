@@ -7,13 +7,13 @@ class CreatePosts < ActiveRecord::Migration
       t.string :author
       t.datetime :date
       t.string :message_id
-      t.string :references
+      t.string :parent_id
       t.string :first_line
       t.text :headers
       t.text :body
     end
     add_index :posts, [:newsgroup, :number], :unique => true
     add_index :posts, :message_id
-    add_index :posts, :references
+    add_index :posts, :parent_id
   end
 end
