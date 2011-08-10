@@ -25,7 +25,7 @@ if <%= @showing ? 'true' : 'false' %> or
     
     if needs_load and scroll_top + view_height > content_height - 600
       $('#posts_load').attr('data-loading', 'true')
-      $.getScript '<%= posts_path(@newsgroup.name) %>?from=' +
+      window.active_scroll_load = $.getScript '<%= posts_path(@newsgroup.name) %>?from=' +
           $('#posts_list tbody tr[data-level="1"]').last().attr('data-number')
   
   $('#posts_list').scroll()

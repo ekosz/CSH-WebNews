@@ -1,6 +1,7 @@
 @chunks = {}
 @check_new_delay = 15000
-active_navigation = null
+window.active_navigation = false
+window.active_scroll_load = false
 
 @toggle_thread_expand = (tr) ->
   if tr.find('.expandable').length > 0
@@ -19,12 +20,13 @@ active_navigation = null
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
     $('#dialog_wrapper').remove()
-    active_navigation.abort() if active_navigation
-    active_navigation = $.getScript location.hash.replace('#!', '')
+    window.active_navigation.abort() if window.active_navigation
+    window.active_navigation = $.getScript location.hash.replace('#!', '')
     
     new_group = location.hash.split('/')[1]
     loaded_group = $('#groups_list [data-loaded]').attr('data-name')
     if new_group != loaded_group
+      window.active_scroll_load.abort() if window.active_scroll_load
       $('#group_view').empty().append(chunks.spinner.clone())
       $('#post_view').empty()
       $('#groups_list [data-loaded]').removeAttr('data-loaded')
