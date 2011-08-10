@@ -1,3 +1,14 @@
+<% if @not_found %>
+
+$('#post_view').html '<%= j render('not_found') %>'
+document.title = '<%= @newsgroup.name %> \u00bb Post not found!'
+if '<%= @newsgroup.name %>' != $('#groups_list [data-loaded]').attr('data-name')
+  $.getScript '<%= posts_path(@newsgroup.name) %>?not_found=true'
+else
+  $('#posts_list .selected').removeClass('selected')
+
+<% else %>
+
 select_post = (showing) ->
   post_tr = $('#posts_list tr[data-number="<%= @post.number %>"]')
   
@@ -17,7 +28,7 @@ select_post = (showing) ->
   
   if post_top + 20 > scroll_top + view_height or post_top < scroll_top
     $('#posts_list').scrollTop(post_top - (view_height / 2))
-  
+
 $('#post_view').html '<%= j render(@post) %>'
 $('#post_view .headers').hide()
 document.title = '<%= @newsgroup.name %> \u00bb <%= j @post.subject %>'
@@ -43,4 +54,6 @@ else
 group.addClass('selected') if selected
 
 $('#next_unread').attr('href', '<%= next_unread_href %>')
+<% end %>
+
 <% end %>

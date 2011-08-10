@@ -2,7 +2,7 @@
 
 <% if not @showing %>
 document.title = '<%= @newsgroup.name %>'
-$('#post_view').empty()
+<% if not @not_found %>$('#post_view').empty()<% end %>
 <% end %>
 
 if <%= @showing ? 'true' : 'false' %> or

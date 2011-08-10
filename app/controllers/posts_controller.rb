@@ -12,6 +12,8 @@ class PostsController < ApplicationController
       @newsgroup.posts.maximum(:number) + 1
     end
     
+    @not_found = true if params[:not_found]
+    
     if params[:showing]
       @showing = @newsgroup.posts.find_by_number(params[:showing])
       @posts = @newsgroup.posts.
@@ -30,8 +32,12 @@ class PostsController < ApplicationController
   end
   
   def show
-    @post_was_unread = @post.mark_read_for_user(@current_user)
-    get_next_unread_post if @post_was_unread
+    if @post
+      @post_was_unread = @post.mark_read_for_user(@current_user)
+      get_next_unread_post if @post_was_unread
+    else
+      @not_found = true
+    end
   end
   
   def new
