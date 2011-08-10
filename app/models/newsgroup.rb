@@ -14,7 +14,7 @@ class Newsgroup < ActiveRecord::Base
     return { :count => count, :hclass => hclass }
   end
   
-  def self.sync_group!(nntp, name, status, standalone = true)
+  def self.sync_group!(nntp, name, status, standalone = true, full_reload = false)
     if standalone
       sleep 0.1 until not File.exists?('tmp/syncing.txt')
       FileUtils.touch('tmp/syncing.txt')
@@ -42,10 +42,12 @@ class Newsgroup < ActiveRecord::Base
       head = nntp.head(number)[1].join("\n")
       body = nntp.body(number)[1].join("\n")
       post = Post.import!(newsgroup, number, head, body)
-      User.find_each do |user|
-        if not post.authored_by?(user) and user.unread_in_group?(newsgroup)
-          UnreadPostEntry.create!(:user => user, :newsgroup => newsgroup, :post => post,
-            :personal_level => PERSONAL_CODES[post.personal_class_for_user(user)])
+      if not full_reload
+        User.find_each do |user|
+          if not post.authored_by?(user) and user.unread_in_group?(newsgroup)
+            UnreadPostEntry.create!(:user => user, :newsgroup => newsgroup, :post => post,
+              :personal_level => PERSONAL_CODES[post.personal_class_for_user(user)])
+          end
         end
       end
       print '.'
@@ -55,8 +57,8 @@ class Newsgroup < ActiveRecord::Base
     FileUtils.rm('tmp/syncing.txt') if standalone
   end
   
-  def self.sync_all!
-    puts "Waiting for any active sync to complete..."
+  def self.sync_all!(full_reload = false)
+    puts "Waiting for any active sync to complete...\n\n"
     sleep 0.1 until not File.exists?('tmp/syncing.txt')
     FileUtils.touch('tmp/syncing.txt')
     Net::NNTP.start(NEWS_SERVER) do |nntp|
@@ -66,7 +68,7 @@ class Newsgroup < ActiveRecord::Base
       
       nntp.list[1].each do |line|
         s = line.split
-        sync_group!(nntp, s[0], s[3], false)
+        sync_group!(nntp, s[0], s[3], false, full_reload)
       end
     end
     FileUtils.touch('tmp/lastsync.txt')
@@ -74,24 +76,12 @@ class Newsgroup < ActiveRecord::Base
   end
   
   def self.reload_all!
+    sleep 0.1 until not File.exists?('tmp/syncing.txt')
+    FileUtils.touch('tmp/syncing.txt')
     UnreadPostEntry.delete_all
     Post.delete_all
     Newsgroup.delete_all
-    
-    Net::NNTP.start(NEWS_SERVER) do |nntp|
-      nntp.list[1].each do |line|
-        s = line.split
-        n = Newsgroup.create!(:name => s[0], :status => s[3])
-        
-        puts nntp.group(n.name)[1]
-        nntp.listgroup(n.name)[1].each do |number|
-          head = nntp.head(number)[1].join("\n")
-          body = nntp.body(number)[1].join("\n")
-          Post.import!(n, number.to_i, head, body)
-          print '.'
-        end
-        puts
-      end
-    end
+    FileUtils.rm('tmp/syncing.txt')
+    sync_all!(true)
   end
 end
