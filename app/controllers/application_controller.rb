@@ -24,4 +24,8 @@ class ApplicationController < ActionController::Base
         @current_user.touch
       end
     end
+    
+    def get_next_unread_post
+      @next_unread_post = @current_user.unread_posts.order('newsgroup, date').first
+    end
 end

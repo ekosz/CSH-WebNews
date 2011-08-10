@@ -1,5 +1,4 @@
 class PagesController < ApplicationController
-  before_filter :sync_posts, :only => [:home, :check_new]
   before_filter :get_newsgroups, :only => [:home, :check_new]
 
   def home
@@ -8,6 +7,8 @@ class PagesController < ApplicationController
       wants.html do
         @current_user.real_name = ENV['WEBAUTH_LDAP_CN']
         @current_user.save!
+        sync_posts
+        get_next_unread_post
       end
       
       wants.js do
@@ -36,6 +37,8 @@ class PagesController < ApplicationController
   end
   
   def check_new
+    sync_posts
+    get_next_unread_post
   end
   
   private
@@ -45,14 +48,12 @@ class PagesController < ApplicationController
     end
     
     def sync_posts
-      if not (action_name == 'home' and request.xhr?)
-        if not File.exists?('tmp/syncing.txt') and
-            (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
-          FileUtils.touch('tmp/syncing.txt')
-          Newsgroup.sync_all!
-          FileUtils.touch('tmp/lastsync.txt')
-          FileUtils.rm('tmp/syncing.txt')
-        end
+      if not File.exists?('tmp/syncing.txt') and
+          (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
+        FileUtils.touch('tmp/syncing.txt')
+        Newsgroup.sync_all!
+        FileUtils.touch('tmp/lastsync.txt')
+        FileUtils.rm('tmp/syncing.txt')
       end
     end
 end

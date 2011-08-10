@@ -14,6 +14,8 @@ if new_in_loaded > 0 and not $('#posts_load').attr('data-loading')
 else
   $('#group_view .new_posts').text('')
 
+$('#next_unread').attr('href', '<%= next_unread_href %>')
+
 setTimeout (->
   $.getScript '/check_new'
 ), check_new_delay

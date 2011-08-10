@@ -133,6 +133,11 @@ i { font-style: italic; }
     border-color: #b00;
     &:hover { background-color: #b00; }
   }
+  
+  &#next_unread[href="#"] {
+    color: $border_button;
+    &:hover { background-color: $bg_light; }
+  }
 }
 
 input[type="submit"] { margin-right: 0; }

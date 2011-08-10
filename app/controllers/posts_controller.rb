@@ -30,6 +30,7 @@ class PostsController < ApplicationController
   
   def show
     @post_was_unread = @post.mark_read_for_user(@current_user)
+    get_next_unread_post if @post_was_unread
   end
   
   def new
