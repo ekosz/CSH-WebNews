@@ -17,9 +17,16 @@
       <%= f.text_area :body %>
     </div>
     
+    <% if @post %>
+      <%= f.hidden_field :reply_newsgroup, :value => @post.newsgroup.name %>
+      <%= f.hidden_field :reply_number, :value => @post.number %>
+    <% end %>
+    
     <div class="dialog_buttons">
       <%= f.submit 'Post', :class => 'button green' %>
       <a href="#" class="button red dialog_cancel">Cancel</a>
     </div>
   <% end %>
+  
+  <div class="errors"></div>
 </div>

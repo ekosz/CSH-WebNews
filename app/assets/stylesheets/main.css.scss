@@ -62,17 +62,6 @@ i { font-style: italic; }
 .mine_reply { color: #f0f !important; }
 .mine_in_thread { color: #00f !important; }
 
-#dialog {
-  p, ul {
-    @include links;
-    margin-bottom: 1.25em;
-  }
-  
-  input[type=text], textarea {
-    width: 99%;
-  }
-}
-
 #toolbar {
   height: 2.4em;
   line-height: 1.8em;
@@ -405,7 +394,7 @@ input[type="submit"] { margin-right: 0; }
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 640px;
+  width: 700px;
   padding: 10px;
   background-color: $bg_light;
   border: 2px solid $border_light;
@@ -414,5 +403,22 @@ input[type="submit"] { margin-right: 0; }
   .dialog_buttons {
     text-align: right;
     margin-top: 10px;
+  }
+  
+  .errors {
+    color: #d00;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 10px;
+    margin-right: 8px;
+  }
+  
+  p, ul {
+    @include links;
+    margin-bottom: 1.25em;
+  }
+  
+  input[type=text], textarea {
+    width: 99%;
   }
 }

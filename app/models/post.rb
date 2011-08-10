@@ -11,6 +11,12 @@ class Post < ActiveRecord::Base
     author[/"?.*?"? <(.*)>/, 1] || author[/(.*) \(.*\)/, 1] || nil
   end
   
+  def quoted_body
+    author_name + " wrote:\n\n" +
+      body.chomp.sub(/(.*)\n-- \n.*/m, '\\1').
+        split("\n").map{ |line| '>' + line }.join("\n") + "\n\n"
+  end
+  
   def parent
     Post.where(:message_id => references, :newsgroup => newsgroup.name).first
   end
@@ -154,6 +160,20 @@ class Post < ActiveRecord::Base
             :body => body)
   end
   
+  def self.build_message(p)
+    m = "From: #{p[:user].real_name} <#{p[:user].email}>"
+    m += "\nSubject: #{p[:subject].encode('US-ASCII', :invalid => :replace, :undef => :replace)}"
+    m += "\nNewsgroups: #{p[:newsgroup].name}"
+    if p[:reply_post]
+      existing_refs = p[:reply_post].headers[/^References: (.*)/i, 1]
+      existing_refs ? existing_refs += ' ' : existing_refs = ''
+      m += "\nReferences: #{existing_refs + p[:reply_post].message_id}"
+    end
+    m += "\nContent-Type: text/plain; charset=utf-8; format=flowed"
+    m += "\nUser-Agent: CSH-WebNews"
+    m += "\n\n#{flowed_encode(p[:body])}"
+  end
+  
   # See RFC 3676 for "format=flowed" spec
   
   def self.flowed_decode(body)
@@ -174,5 +194,22 @@ class Post < ActiveRecord::Base
       end
     end
     return new_body_lines.join("\n")
+  end
+  
+  def self.flowed_encode(body)
+    body.split("\n").map do |line|
+      line.rstrip!
+      quotes = ''
+      if line[/^>/]
+        quotes = line[/^([> ]*>)/, 1].gsub(' ', '')
+        line.gsub!(/^[> ]*>/, '')
+      end
+      line = ' ' + line if line[/^ /]
+      if line.length > 78
+        line.gsub(/(.{1,#{72 - quotes.length}})(\s+|$)/, "#{quotes}\\1 \n").rstrip
+      else
+        quotes + line
+      end
+    end.join("\n")
   end
 end
