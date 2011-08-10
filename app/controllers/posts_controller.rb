@@ -70,13 +70,20 @@ class PostsController < ApplicationController
       :reply_post => reply_post
     )
     
+    new_message_id = nil
     begin
-      Net::NNTP.start('news.csh.rit.edu') do |nntp|
-        nntp.post(post_string)
+      Net::NNTP.start(NEWS_SERVER) do |nntp|
+        new_message_id = nntp.post(post_string)[1][/<.*?>/]
       end
     rescue Net::NNTPError
       @error_text = 'NNTP Error: ' + $!.message
     end
+    
+    Net::NNTP.start(NEWS_SERVER) do |nntp|
+      Newsgroup.sync_group!(nntp, newsgroup.name, newsgroup.status)
+    end
+    
+    @new_post = Post.find_by_message_id(new_message_id)
   end
   
   private

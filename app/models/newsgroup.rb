@@ -14,12 +14,71 @@ class Newsgroup < ActiveRecord::Base
     return { :count => count, :hclass => hclass }
   end
   
+  def self.sync_group!(nntp, name, status, standalone = true)
+    if standalone
+      sleep 0.1 until not File.exists?('tmp/syncing.txt')
+      FileUtils.touch('tmp/syncing.txt')
+    end
+    
+    if Newsgroup.where(:name => name).exists?
+      newsgroup = Newsgroup.where(:name => name).first
+    else
+      newsgroup = Newsgroup.create!(:name => name, :status => status)
+    end
+    
+    puts nntp.group(newsgroup.name)[1]
+    my_posts = Post.where(:newsgroup => newsgroup.name).select(:number).map(&:number)
+    news_posts = nntp.listgroup(newsgroup.name)[1].map(&:to_i)
+    to_delete = my_posts - news_posts
+    to_import = news_posts - my_posts
+    
+    puts "Deleting #{to_delete.size} posts."
+    to_delete.each do |number|
+      Post.where(:newsgroup => newsgroup.name, :number => number).first.destroy
+    end
+    
+    puts "Importing #{to_import.size} posts."
+    to_import.each do |number|
+      head = nntp.head(number)[1].join("\n")
+      body = nntp.body(number)[1].join("\n")
+      post = Post.import!(newsgroup, number, head, body)
+      User.find_each do |user|
+        if not post.authored_by?(user) and user.unread_in_group?(newsgroup)
+          UnreadPostEntry.create!(:user => user, :newsgroup => newsgroup, :post => post,
+            :personal_level => PERSONAL_CODES[post.personal_class_for_user(user)])
+        end
+      end
+      print '.'
+    end
+    puts
+    
+    FileUtils.rm('tmp/syncing.txt') if standalone
+  end
+  
+  def self.sync_all!
+    puts "Waiting for any active sync to complete..."
+    sleep 0.1 until not File.exists?('tmp/syncing.txt')
+    FileUtils.touch('tmp/syncing.txt')
+    Net::NNTP.start(NEWS_SERVER) do |nntp|
+      my_groups = Newsgroup.select(:name).collect(&:name)
+      news_groups = nntp.list[1].collect{ |line| line.split[0] }
+      (my_groups - news_groups).each{ |name| Newsgroup.find_by_name(name).destroy }
+      
+      nntp.list[1].each do |line|
+        s = line.split
+        sync_group!(nntp, s[0], s[3], false)
+      end
+    end
+    FileUtils.touch('tmp/lastsync.txt')
+    FileUtils.rm('tmp/syncing.txt')
+  end
+  
   def self.reload_all!
     UnreadPostEntry.delete_all
     Post.delete_all
     Newsgroup.delete_all
     
-    Net::NNTP.start('news.csh.rit.edu') do |nntp|
+    Net::NNTP.start(NEWS_SERVER) do |nntp|
       nntp.list[1].each do |line|
         s = line.split
         n = Newsgroup.create!(:name => s[0], :status => s[3])
@@ -29,49 +88,6 @@ class Newsgroup < ActiveRecord::Base
           head = nntp.head(number)[1].join("\n")
           body = nntp.body(number)[1].join("\n")
           Post.import!(n, number.to_i, head, body)
-          print '.'
-        end
-        puts
-      end
-    end
-  end
-  
-  def self.sync_all!
-    Net::NNTP.start('news.csh.rit.edu') do |nntp|
-      my_groups = Newsgroup.select(:name).collect(&:name)
-      news_groups = nntp.list[1].collect{ |line| line.split[0] }
-      (my_groups - news_groups).each{ |name| Newsgroup.find_by_name(name).destroy }
-      
-      nntp.list[1].each do |line|
-        s = line.split
-        if Newsgroup.where(:name => s[0]).exists?
-          n = Newsgroup.where(:name => s[0]).first
-        else
-          n = Newsgroup.create!(:name => s[0], :status => s[3])
-        end
-        
-        puts nntp.group(n.name)[1]
-        my_posts = Post.where(:newsgroup => n.name).select(:number).map(&:number)
-        news_posts = nntp.listgroup(n.name)[1].map(&:to_i)
-        to_delete = my_posts - news_posts
-        to_import = news_posts - my_posts
-        
-        puts "Deleting #{to_delete.size} posts."
-        to_delete.each do |number|
-          Post.where(:newsgroup => n.name, :number => number).first.destroy
-        end
-        
-        puts "Importing #{to_import.size} posts."
-        to_import.each do |number|
-          head = nntp.head(number)[1].join("\n")
-          body = nntp.body(number)[1].join("\n")
-          post = Post.import!(n, number, head, body)
-          User.find_each do |user|
-            if not post.authored_by?(user) and user.unread_in_group?(n)
-              UnreadPostEntry.create!(:user => user, :newsgroup => n, :post => post,
-                :personal_level => PERSONAL_CODES[post.personal_class_for_user(user)])
-            end
-          end
           print '.'
         end
         puts

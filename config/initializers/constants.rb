@@ -1,3 +1,5 @@
+NEWS_SERVER = 'news.csh.rit.edu'
+
 DATE_FORMAT = '%-m/%-d/%Y %-I:%M%P'
 
 ACTIVITY_FEED_EXCLUDE = /^(control|csh\.lists|csh\.test)/
