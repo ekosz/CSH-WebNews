@@ -1,4 +1,4 @@
-<div id="group_buttons">
+<div class="buttons">
   <a class="new_posts" href="#!<%= posts_path(@newsgroup.name) %>"></a>
   <% if @newsgroup.status == 'y' %>
     <a class="button" href="#?<%= new_post_path(:newsgroup => @newsgroup.name) %>">Post New</a>

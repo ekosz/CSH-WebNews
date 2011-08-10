@@ -235,7 +235,7 @@ input[type="submit"] { margin-right: 0; }
     padding: 10px;
   }
   
-  #group_buttons {
+  .buttons {
     float: right;
     margin-top: 15px;
     margin-right: 20px;
@@ -323,7 +323,7 @@ input[type="submit"] { margin-right: 0; }
   right: 0;
   bottom: 0;
   
-  #post_buttons {
+  .buttons {
     z-index: 1;
     position: absolute;
     top: 15px;
@@ -401,7 +401,7 @@ input[type="submit"] { margin-right: 0; }
   border: 2px solid $border_light;
   border-top: 0;
   
-  .dialog_buttons {
+  .buttons {
     text-align: right;
     margin-top: 10px;
   }

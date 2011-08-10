@@ -14,7 +14,7 @@ post.body.each_line do |line|
 end
 html_body = auto_link(html_body, :link => :urls, :sanitize => false)
 %>
-<div id="post_buttons">
+<div class="buttons">
   <a class="button"
     href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
