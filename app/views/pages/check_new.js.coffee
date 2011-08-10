@@ -17,7 +17,8 @@ else
 $('#next_unread').attr('href', '<%= next_unread_href %>')
 
 <% if @dashboard_active %>
-$('#group_view').html '<%= j render('dashboard') %>'
+if location.hash == '#!/home'
+  $('#group_view').html '<%= j render('dashboard') %>'
 <% end %>
 
 setTimeout (->
