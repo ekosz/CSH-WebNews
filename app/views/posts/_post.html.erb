@@ -19,7 +19,7 @@ html_body = auto_link(html_body, :link => :urls, :sanitize => false)
     href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
   <% if post.authored_by?(@current_user) and post.children.count == 0 %>
-    <a class="button red" href="#">Cancel Post</a>
+    <!-- <a class="button red" href="#">Cancel Post</a> -->
   <% end %>
 </div>
 <div id="post_content">
