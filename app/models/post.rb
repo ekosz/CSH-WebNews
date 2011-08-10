@@ -18,11 +18,11 @@ class Post < ActiveRecord::Base
   end
   
   def parent
-    Post.where(:message_id => parent_id).first
+    Post.where(:message_id => parent_id, :newsgroup => newsgroup.name).first
   end
   
   def children
-    Post.where(:parent_id => message_id).order('date')
+    Post.where(:parent_id => message_id, :newsgroup => newsgroup.name).order('date')
   end
   
   def thread_parent
