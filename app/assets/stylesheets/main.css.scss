@@ -154,11 +154,12 @@ input[type="submit"] { margin-right: 0; }
 }
 
 #external_links {
-  z-index: -1;
+  z-index: 1;
   position: absolute;
   left: 0;
   right: 80%;
   bottom: 0;
+  margin-right: 2px;
   color: $text_light;
   background-color: $bg_toolbar;
   border-top: 1px solid $border_button;
