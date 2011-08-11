@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   private
   
     def authenticate
-      if not ENV['WEBAUTH_USER']
+      if not request.env['WEBAUTH_USER']
         render :file => "#{RAILS_ROOT}/public/auth.html"
       end
     end
@@ -23,11 +23,11 @@ class ApplicationController < ActionController::Base
     end
   
     def get_or_create_user
-      @current_user = User.find_by_username(ENV['WEBAUTH_USER'])
+      @current_user = User.find_by_username(request.env['WEBAUTH_USER'])
       if @current_user.nil?
         @current_user = User.create!(
-          :username => ENV['WEBAUTH_USER'],
-          :real_name => ENV['WEBAUTH_LDAP_CN'],
+          :username => request.env['WEBAUTH_USER'],
+          :real_name => request.env['WEBAUTH_LDAP_CN'],
           :preferences => {}
         )
         @new_user = true

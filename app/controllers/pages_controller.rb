@@ -5,7 +5,7 @@ class PagesController < ApplicationController
     respond_to do |wants|
       
       wants.html do
-        @current_user.real_name = ENV['WEBAUTH_LDAP_CN']
+        @current_user.real_name = request.env['WEBAUTH_LDAP_CN']
         @current_user.save!
         sync_posts
         get_next_unread_post
