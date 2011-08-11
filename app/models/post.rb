@@ -87,6 +87,7 @@ class Post < ActiveRecord::Base
   def self.import!(newsgroup, number, headers, body)
     attachments_stripped = false
     headers.gsub!(/\n( |\t)/, ' ')
+    headers.encode!('US-ASCII', :invalid => :replace, :undef => :replace)
   
     if headers[/^Content-Type: multipart/i]
       boundary = Regexp.escape(headers[/^Content-Type:.*boundary ?= ?"?([^"]+?)"?(;|$)/i, 1])
