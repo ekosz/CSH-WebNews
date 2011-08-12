@@ -62,10 +62,6 @@ $('a[href^="#?/"]').live 'click', ->
   $.getScript @href.replace('#?', '')
   return false
 
-$('a[href^="#~/"]').live 'click', ->
-  $.getScript @href.replace('#~', '')
-  return false
-
 $('a.mark_read').live 'click', ->
   if window.active_check_new
     window.active_check_new.abort()
@@ -84,14 +80,17 @@ $('a.mark_read').live 'click', ->
   $('#groups_list [data-name="' + selected + '"]').addClass('selected')
   
   if location.hash.match '#!/home'
-    window.onhashchange()
+    $('#group_view').empty().append(chunks.spinner.clone())
+    success = -> window.onhashchange()
   else
     $('#posts_list tbody tr').removeClass('unread')
     if window.active_scroll_load
       window.active_scroll_load.abort()
       window.active_scroll_load = false
-      $('#posts_list').scroll()
-
+      success = -> $('#posts_list').scroll()
+  
+  $.getScript @href.replace('#~', ''), success
+  return false
 
 $('a.dialog_cancel').live 'click', ->
   $('#overlay').remove()
