@@ -18,6 +18,7 @@ $('#next_unread').attr('href', '<%= next_unread_href %>')
 
 <% if @dashboard_active %>
 if location.hash.match '#!/home'
+  document.title = '<%= j home_page_title %>'
   $('#group_view').html '<%= j render('dashboard') %>'
 <% end %>
 
