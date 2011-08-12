@@ -38,8 +38,8 @@ else
 
 $('#posts_list tbody').append '<%= j render(:partial => 'posts_list') %>'
 
-from_tr = $('#posts_list tr[data-number="<%= @from %>"]')
-from_tr.nextAll().find('.expanded').removeClass('expanded').addClass('expandable')
+from_tr = $('#posts_list tr[data-number="<%= @from %>"]').nextAll('[data-level="1"]').first()
+from_tr.nextAll().andSelf().find('.expanded').removeClass('expanded').addClass('expandable')
 from_tr.nextAll('[data-level!="1"]').hide()
 for unread in from_tr.nextAll('.unread[data-level!="1"]')
   toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
