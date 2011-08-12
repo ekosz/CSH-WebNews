@@ -12,7 +12,7 @@ class PagesController < ApplicationController
       end
       
       wants.js do
-        get_activity_feeds
+        get_activity_feed
       end
       
     end
@@ -26,7 +26,7 @@ class PagesController < ApplicationController
     get_next_unread_post
     if params[:location] == '#!/home'
       @dashboard_active = true
-      get_activity_feeds
+      get_activity_feed
     end
   end
   
@@ -36,21 +36,15 @@ class PagesController < ApplicationController
       @newsgroups = Newsgroup.all
     end
     
-    def get_activity_feeds
+    def get_activity_feed
       recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
       recent_posts.reject!{ |post| post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] }
       
-      # Careful, using recent_posts.where(...) would operate on the
-      # original result set, not the modified one created by reject!
-      @recent_threads = recent_posts.reject{ |post| post.parent_id != '' }
-      recent_replies = recent_posts - @recent_threads
-      
       @active_threads = {}
-      recent_replies.each do |post|
+      recent_posts.each do |post|
         thread = post.thread_parent
         if @active_threads[thread].nil? or @active_threads[thread] < post.date
           @active_threads[thread] = post.date
-          @recent_threads -= [thread]
         end
       end
     end

@@ -201,17 +201,24 @@ input[type="submit"] { margin-right: 0; }
   table.activity {
     line-height: 1.5;
     margin-bottom: 2em;
-    border-top: 1px solid $border_light;
-    border-bottom: 1px solid $border_light;
+    
+    tbody {
+      border-top: 1px solid $border_light;
+      border-bottom: 1px solid $border_light;
+    }
     
     a {
       color: $text_normal;
       &:hover { opacity: 0.7; }
     }
     
+    th {
+      text-align: left;
+    }
+    
     td {
       color: $text_light;
-      padding-right: 10px;
+      padding-right: 15px;
     }
   }
 }

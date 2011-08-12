@@ -1,21 +1,19 @@
-<h3>Active Threads</h3>
-<p class="explain">Threads with new replies in the past 7 days</p>
+<h3>New and Active Threads</h3>
+<p class="explain">over the past 7 days (excluding control, lists, and csh.test)</p>
 
 <table class="activity">
-  <% @active_threads.each do |post, date| %>
-    <%= render :partial => 'activity_row', :locals =>
-      { :post => post, :date => date, :unread => post.thread_unread_for_user?(@current_user) } %>
-  <% end %>
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Author</th>
+      <th>Newsgroup</th>
+      <th>Newest Post</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @active_threads.each do |post, date| %>
+      <%= render :partial => 'activity_row', :locals =>
+        { :post => post, :date => date, :unread => post.thread_unread_for_user?(@current_user) } %>
+    <% end %>
+  </tbody>
 </table>
-
-<h3>New Threads</h3>
-<p class="explain">Threads started in the past 7 days with no replies yet</p>
-
-<table class="activity">
-  <% @recent_threads.each do |post| %>
-    <%= render :partial => 'activity_row', :locals =>
-      { :post => post, :date => post.date, :unread => post.unread_for_user?(@current_user) } %>
-  <% end %>
-</table>
-
-<p class="explain"><br>Control groups, mailing list groups, and csh.test are excluded from these feeds.</p>
