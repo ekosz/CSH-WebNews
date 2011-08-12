@@ -135,6 +135,11 @@ i { font-style: italic; }
     &:hover { background-color: #b00; }
   }
   
+  &.blue {
+    border-color: #77f;
+    &:hover { background-color: #77f; }
+  }
+  
   &#next_unread[href="#"] {
     color: $border_button;
     &:hover { background-color: $bg_light; }

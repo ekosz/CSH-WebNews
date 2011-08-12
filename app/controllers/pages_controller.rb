@@ -18,6 +18,9 @@ class PagesController < ApplicationController
     end
   end
   
+  def about
+  end
+  
   def new_user
   end
   
