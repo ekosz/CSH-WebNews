@@ -63,15 +63,15 @@ i { font-style: italic; }
 .mine_in_thread { color: #11f !important; }
 
 #toolbar {
-  height: 2.4em;
-  line-height: 1.8em;
-  padding: 0.6em 0 0 10px;
+  height: 32px;
+  line-height: 24px;
+  padding: 8px 0 0 10px;
   background-color: $bg_toolbar;
   border-bottom: 2px solid $border_button;
   
   h1 {
     color: #bbb;
-    font-size: 1.6em;
+    font-size: 160%;
     vertical-align: middle;
     display: inline;
     .beta { color: #d77; }
@@ -92,7 +92,8 @@ i { font-style: italic; }
 
 .button, input[type="submit"] {
   display: inline-block;
-  line-height: 1.8em;
+  line-height: 24px;
+  vertical-align: middle;
   padding: 0 6px;
   margin-right: 8px;
   margin-top: -2px;
@@ -134,10 +135,11 @@ input[type="submit"] { margin-right: 0; }
 
 #groups_list {
   position: absolute;
-  top: 3em;
+  top: 40px;
   left: 0;
-  right: 80%;
   bottom: 0;
+  width: 230px;
+  margin-top: 2px;
   padding: 10px;
   border-right: 2px solid $border_pane;
   overflow: hidden;
@@ -157,14 +159,14 @@ input[type="submit"] { margin-right: 0; }
   z-index: 1;
   position: absolute;
   left: 0;
-  right: 80%;
   bottom: 0;
+  width: 250px;
   margin-right: 2px;
   color: $text_light;
   background-color: $bg_toolbar;
   border-top: 1px solid $border_button;
   text-align: center;
-  line-height: 1.5em;
+  line-height: 1.5;
   padding-bottom: 0.25em;
   
   a {
@@ -176,14 +178,13 @@ input[type="submit"] { margin-right: 0; }
 
 #dashboard {
   position: absolute;
-  top: 2px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 10px;
-  padding-top: 8px;
   
   p {
     @include links;
@@ -218,10 +219,12 @@ input[type="submit"] { margin-right: 0; }
 #group_view {
   overflow: hidden;
   position: absolute;
-  top: 3em;
-  left: 20%;
+  top: 40px;
+  left: 250px;
   right: 0;
   bottom: 50%;
+  margin-top: 2px;
+  margin-left: 2px;
   border-bottom: 2px solid $border_pane;
   
   &>.spinner {
@@ -289,7 +292,7 @@ input[type="submit"] { margin-right: 0; }
       }
       
       tfoot th {
-        padding-left: 21px;
+        padding-left: 22px;
         border-top: 1px solid $border_light;
         
         &.spinner {
@@ -320,9 +323,11 @@ input[type="submit"] { margin-right: 0; }
   overflow: hidden;
   position: absolute;
   top: 50%;
-  left: 20%;
+  left: 250px;
   right: 0;
   bottom: 0;
+  margin-top: 1px;
+  margin-left: 2px;
   
   .buttons {
     z-index: 1;
@@ -424,5 +429,7 @@ input[type="submit"] { margin-right: 0; }
   
   input[type=text], textarea {
     width: 99%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
