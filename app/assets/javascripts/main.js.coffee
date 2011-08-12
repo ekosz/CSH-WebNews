@@ -2,6 +2,7 @@
 @check_new_delay = 15000
 window.active_navigation = false
 window.active_scroll_load = false
+window.active_check_new = false
 
 @toggle_thread_expand = (tr) ->
   if tr.find('.expandable').length > 0
@@ -48,7 +49,7 @@ $(document).ready ->
     window.onhashchange()
   
   setTimeout (->
-    $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+    window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
   ), check_new_delay
 
 $('a[href="#"]').live 'click', ->
@@ -58,6 +59,37 @@ $('a[href^="#?/"]').live 'click', ->
   $('body').append(chunks.overlay.clone())
   $.getScript @href.replace('#?', '')
   return false
+
+$('a[href^="#~/"]').live 'click', ->
+  $.getScript @href.replace('#~', '')
+  return false
+
+$('a.mark_read').live 'click', ->
+  if window.active_check_new
+    window.active_check_new.abort()
+    window.active_check_new = false
+    setTimeout (->
+      window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+    ), check_new_delay
+  
+  selected = $('#groups_list .selected').attr('data-name')
+  newsgroup = $(this).attr('data-newsgroup')
+  if newsgroup
+    group_item = $('#groups_list [data-name="' + newsgroup + '"]')
+    group_item.removeClass().find('.unread_count').remove()
+  else
+    $('#groups_list li').removeClass().find('.unread_count').remove()
+  $('#groups_list [data-name="' + selected + '"]').addClass('selected')
+  
+  if location.hash.match '#!/home'
+    window.onhashchange()
+  else
+    $('#posts_list tbody tr').removeClass('unread')
+    if window.active_scroll_load
+      window.active_scroll_load.abort()
+      window.active_scroll_load = false
+      $('#posts_list').scroll()
+
 
 $('a.dialog_cancel').live 'click', ->
   $('#overlay').remove()

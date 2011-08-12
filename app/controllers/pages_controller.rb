@@ -30,6 +30,16 @@ class PagesController < ApplicationController
     end
   end
   
+  def mark_read
+    if params[:newsgroup]
+      @current_user.unread_post_entries.
+        where(:newsgroup_id => Newsgroup.find_by_name(params[:newsgroup]).id).destroy_all
+    else
+      @current_user.unread_post_entries.destroy_all
+    end
+    render :nothing => true
+  end
+  
   private
     
     def get_newsgroups

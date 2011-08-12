@@ -21,10 +21,9 @@ if <%= @showing ? 'true' : 'false' %> or
     view_height = $(this).height()
     content_height = this.scrollHeight
     scroll_top = $(this).scrollTop()
-    needs_load = not ( $('#posts_load').attr('data-loading') or $('#posts_load').attr('data-nomore') )
+    needs_load = not ( window.active_scroll_load or $('#posts_load').attr('data-nomore') )
     
     if needs_load and scroll_top + view_height > content_height - 600
-      $('#posts_load').attr('data-loading', 'true')
       window.active_scroll_load = $.getScript '<%= posts_path(@newsgroup.name) %>?from=' +
           $('#posts_list tbody tr[data-level="1"]').last().attr('data-number')
   
@@ -44,7 +43,7 @@ from_tr.nextAll('[data-level!="1"]').hide()
 for unread in from_tr.nextAll('.unread[data-level!="1"]')
   toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
 
-$('#posts_load').removeAttr('data-loading')
+window.active_scroll_load = false
 
 <% if @more %>
 $('#posts_list').scroll()

@@ -8,7 +8,7 @@ $('#groups_list [data-name="' + loaded + '"]').attr('data-loaded', 'true')
 
 unread_in_loaded = parseInt($('#groups_list [data-name="' + loaded + '"]').attr('data-unread'))
 new_in_loaded = unread_in_loaded - $('#posts_list .unread').length
-if new_in_loaded > 0 and not $('#posts_load').attr('data-loading')
+if new_in_loaded > 0 and not window.active_scroll_load
   posts = if new_in_loaded == 1 then 'post' else 'posts'
   $('#group_view .new_posts').text(new_in_loaded + ' new ' + posts + ' in this group!')
 else
@@ -17,10 +17,11 @@ else
 $('#next_unread').attr('href', '<%= next_unread_href %>')
 
 <% if @dashboard_active %>
-if location.hash == '#!/home'
+if location.hash.match '#!/home'
   $('#group_view').html '<%= j render('dashboard') %>'
 <% end %>
 
+window.active_check_new = false
 setTimeout (->
-  $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+  window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
 ), check_new_delay
