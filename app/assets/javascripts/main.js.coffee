@@ -27,7 +27,9 @@ window.onhashchange = ->
     new_group = location.hash.split('/')[1]
     loaded_group = $('#groups_list [data-loaded]').attr('data-name')
     if new_group != loaded_group
-      window.active_scroll_load.abort() if window.active_scroll_load
+      if window.active_scroll_load
+        window.active_scroll_load.abort()
+        window.active_scroll_load = false
       $('#group_view').empty().append(chunks.spinner.clone())
       $('#post_view').empty()
       $('#groups_list [data-loaded]').removeAttr('data-loaded')
