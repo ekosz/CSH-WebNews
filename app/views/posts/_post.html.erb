@@ -12,7 +12,13 @@ post.body.each_line do |line|
   quote_depth += depth_change
   html_body += line + "\n"
 end
-html_body = auto_link(html_body, :link => :urls, :sanitize => false)
+
+if @current_user.open_links_in_new?
+  html_body = auto_link(html_body, :link => :urls, :sanitize => false, :html => {:target => '_blank'})
+  html_body.gsub!(/(<a href="https?:\/\/#{Regexp.escape(request.host)}.*?") target="_blank"/, '\\1')
+else
+  html_body = auto_link(html_body, :link => :urls, :sanitize => false)
+end
 %>
 <div class="buttons">
   <a class="button"

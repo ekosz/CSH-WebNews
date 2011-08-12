@@ -5,17 +5,26 @@
     
     <%= f.fields_for :preferences do |p| %>
       <div class="form_element">
-        <%= p.check_box :unread_in_test, :checked => @current_user.unread_in_test? %>
-        <%= p.label :unread_in_test, 'Show unread posts in csh.test' %>
+        <%= p.check_box :open_links_in_new, :checked => @current_user.open_links_in_new? %>
+        <%= p.label :open_links_in_new, 'Open external links from posts in a new window/tab' %>
       </div>
-      <div class="form_element">
-        <%= p.check_box :unread_in_control, :checked => @current_user.unread_in_control? %>
-        <%= p.label :unread_in_control, 'Show unread posts in control groups (e.g. control.cancel)' %>
-      </div>
-      <div class="form_element">
-        <%= p.check_box :unread_in_lists, :checked => @current_user.unread_in_lists? %>
-        <%= p.label :unread_in_lists, 'Show unread posts in mailing list groups (e.g. csh.lists.alumni)' %>
-      </div>
+      
+      <fieldset>
+        <legend>Unread post options</legend>
+        <div class="form_element">
+          <%= p.check_box :unread_in_test, :checked => @current_user.unread_in_test? %>
+          <%= p.label :unread_in_test, 'Show unread posts in csh.test' %>
+        </div>
+        <div class="form_element">
+          <%= p.check_box :unread_in_control, :checked => @current_user.unread_in_control? %>
+          <%= p.label :unread_in_control, 'Show unread posts in control groups (e.g. control.cancel)' %>
+        </div>
+        <div class="form_element">
+          <%= p.check_box :unread_in_lists, :checked => @current_user.unread_in_lists? %>
+          <%= p.label :unread_in_lists, 'Show unread posts in mailing list groups (e.g. csh.lists.alumni)' %>
+        </div>
+      </fieldset>
+      
       <div class="form_element">
         <%= p.label :time_zone, 'Display post times in this time zone:' %>
         <%= p.time_zone_select :time_zone,

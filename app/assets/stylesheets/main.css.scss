@@ -34,6 +34,16 @@ body, select, input, textarea { color: $text_normal; }
   margin-bottom: 1em;
 }
 
+fieldset {
+  border: 1px solid $border_light;
+  border-radius: 2px;
+  margin-bottom: 1em;
+  padding: 0 10px;
+  padding-top: 0.5em;
+  .form_element { margin-bottom: 0.75em; }
+  legend { color: $text_light; }
+}
+
 h2 {
   font-size: 200%;
   margin-bottom: 0.5em;
