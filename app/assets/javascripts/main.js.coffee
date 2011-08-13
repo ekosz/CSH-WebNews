@@ -81,6 +81,7 @@ $('a.mark_read').live 'click', ->
   
   if location.hash.match '#!/home'
     $('#group_view').empty().append(chunks.spinner.clone())
+    $('#next_unread').attr('href', '#')
     success = -> window.onhashchange()
   else
     $('#posts_list tbody tr').removeClass('unread')
