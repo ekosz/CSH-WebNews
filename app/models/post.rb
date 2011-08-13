@@ -63,7 +63,7 @@ class Post < ActiveRecord::Base
     if unread_for_user?(user)
       return true
     elsif children.count > 0
-      return true if children.reduce(false){ |memo, child| memo && child.thread_unread_for_user?(user) }
+      return true if children.reduce(false){ |memo, child| memo || child.thread_unread_for_user?(user) }
     end
     return false
   end
