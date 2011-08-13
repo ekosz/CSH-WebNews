@@ -75,13 +75,14 @@ $('a.mark_read').live 'click', ->
   if newsgroup
     group_item = $('#groups_list [data-name="' + newsgroup + '"]')
     group_item.removeClass().find('.unread_count').remove()
+    $('#next_unread').attr('href', '#') if $('#groups_list .unread_count').length == 0
   else
     $('#groups_list li').removeClass().find('.unread_count').remove()
+    $('#next_unread').attr('href', '#')
   $('#groups_list [data-name="' + selected + '"]').addClass('selected')
   
   if location.hash.match '#!/home'
     $('#group_view').empty().append(chunks.spinner.clone())
-    $('#next_unread').attr('href', '#')
     success = -> window.onhashchange()
   else
     $('#posts_list tbody tr').removeClass('unread')
