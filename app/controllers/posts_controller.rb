@@ -107,6 +107,6 @@ class PostsController < ApplicationController
     end
     
     def get_newsgroups_for_posting
-      @newsgroups = Newsgroup.where(:status => 'y')
+      @newsgroups = Newsgroup.where_posting_allowed
     end
 end

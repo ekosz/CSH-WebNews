@@ -3,6 +3,11 @@ class Newsgroup < ActiveRecord::Base
   has_many :posts, :foreign_key => :newsgroup, :primary_key => :name, :dependent => :destroy
   
   default_scope :order => 'name'
+  scope :where_posting_allowed, where(:status => 'y')
+  
+  def posting_allowed?
+    status == 'y'
+  end
   
   def unread_for_user(user)
     hclass = ''

@@ -21,8 +21,10 @@ else
 end
 %>
 <div class="buttons">
-  <a class="button"
-    href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
+  <% if @newsgroup.posting_allowed? %>
+    <a class="button"
+      href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
+  <% end %>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
   <% if post.authored_by?(@current_user) and post.children.count == 0 %>
     <!-- <a class="button red" href="#">Cancel Post</a> -->
