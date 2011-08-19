@@ -1,5 +1,6 @@
 @chunks = {}
 @check_new_delay = 15000
+@check_new_retry_delay = 5000
 window.active_navigation = false
 window.active_scroll_load = false
 window.active_check_new = false
@@ -39,6 +40,7 @@ window.onhashchange = ->
 $(document).ready ->
   chunks.spinner = $('#loader .spinner').clone()
   chunks.overlay = $('#loader #overlay').clone()
+  chunks.ajax_error = $('#loader #ajax_error').clone()
   $('#loader').remove()
   
   if $('#new_user').length > 0
@@ -122,4 +124,12 @@ $('a, input').live 'mousedown', -> this.style.outlineStyle = 'none'
 $('a, input').live 'blur', -> this.style.outlineStyle = ''
 
 $(document).ajaxError (event, jqxhr, settings, exception) ->
-  alert("Error requesting #{settings.url}") if jqxhr.readyState != 0
+  if jqxhr.readyState != 0
+    if settings.url.match 'check_new'
+      $('body').append(chunks.ajax_error.clone()) if $('#ajax_error').length == 0
+      window.active_check_new = false
+      setTimeout (->
+        window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+      ), check_new_retry_delay
+    else
+      alert("An error occurred requesting #{settings.url}\n\nThis might be due to a connection issue on your end, or it might indicate a bug in WebNews. Check your connection and refresh the page. If this error persists, please file a bug report with the steps needed to reproduce it.")

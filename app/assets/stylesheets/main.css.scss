@@ -467,3 +467,18 @@ input[type="submit"] { margin-right: 0; }
     overflow-y: auto;
   }
 }
+
+#ajax_error {
+  position: absolute;
+  z-index: 15;
+  opacity: 0.9;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 10px;
+  font-weight: bold;
+  background-color: #ffc;
+  border-bottom: 2px solid #ee9;
+}

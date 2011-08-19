@@ -1,3 +1,5 @@
+$('#ajax_error').remove()
+
 selected = $('#groups_list .selected').attr('data-name')
 loaded = $('#groups_list [data-loaded]').attr('data-name')
 
