@@ -27,6 +27,7 @@ class Newsgroup < ActiveRecord::Base
     
     if Newsgroup.where(:name => name).exists?
       newsgroup = Newsgroup.where(:name => name).first
+      newsgroup.update_attributes(:status => status)
     else
       newsgroup = Newsgroup.create!(:name => name, :status => status)
     end
