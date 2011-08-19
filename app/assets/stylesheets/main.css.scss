@@ -100,6 +100,14 @@ i { font-style: italic; }
   }
 }
 
+.buttons {
+  .explain {
+    display: inline-block;
+    padding: 0 6px;
+    color: $text_light;
+  }
+}
+
 .button, input[type="submit"] {
   display: inline-block;
   line-height: 24px;
@@ -167,6 +175,10 @@ input[type="submit"] { margin-right: 0; }
   
   li {
     @include highlights;
+  }
+  
+  .read_only {
+    color: $text_light;
   }
 }
 

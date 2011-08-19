@@ -46,7 +46,7 @@ class PagesController < ApplicationController
   private
     
     def get_newsgroups
-      @newsgroups = Newsgroup.all
+      @newsgroups = Newsgroup.unscoped.order('status DESC, name')
     end
     
     def get_activity_feed
