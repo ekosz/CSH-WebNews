@@ -59,7 +59,7 @@ class Newsgroup < ActiveRecord::Base
       print '.'
     end
     puts
-    
+  ensure
     FileUtils.rm('tmp/syncing.txt') if standalone
   end
   
@@ -67,18 +67,22 @@ class Newsgroup < ActiveRecord::Base
     puts "Waiting for any active sync to complete...\n\n"
     sleep 0.1 until not File.exists?('tmp/syncing.txt')
     FileUtils.touch('tmp/syncing.txt')
-    Net::NNTP.start(NEWS_SERVER) do |nntp|
-      my_groups = Newsgroup.select(:name).collect(&:name)
-      news_groups = nntp.list[1].collect{ |line| line.split[0] }
-      (my_groups - news_groups).each{ |name| Newsgroup.find_by_name(name).destroy }
-      
-      nntp.list[1].each do |line|
-        s = line.split
-        sync_group!(nntp, s[0], s[3], false, full_reload)
+    
+    begin
+      Net::NNTP.start(NEWS_SERVER) do |nntp|
+        my_groups = Newsgroup.select(:name).collect(&:name)
+        news_groups = nntp.list[1].collect{ |line| line.split[0] }
+        (my_groups - news_groups).each{ |name| Newsgroup.find_by_name(name).destroy }
+        
+        nntp.list[1].each do |line|
+          s = line.split
+          sync_group!(nntp, s[0], s[3], false, full_reload)
+        end
       end
+      FileUtils.touch('tmp/lastsync.txt')
+    ensure
+      FileUtils.rm('tmp/syncing.txt')
     end
-    FileUtils.touch('tmp/lastsync.txt')
-    FileUtils.rm('tmp/syncing.txt')
   end
   
   def self.reload_all!

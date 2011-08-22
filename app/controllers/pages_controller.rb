@@ -67,7 +67,13 @@ class PagesController < ApplicationController
     def sync_posts
       if not File.exists?('tmp/syncing.txt') and
           (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
-        Newsgroup.sync_all!
+        begin
+          Newsgroup.sync_all!
+        rescue
+          puts "\n\n### SYNC ERROR ###"
+          puts $!.message
+          puts "##################\n\n"
+        end
       end
     end
 end

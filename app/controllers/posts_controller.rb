@@ -49,6 +49,9 @@ class PostsController < ApplicationController
   end
   
   def create
+    @error_text = nil
+    @sync_error_text = nil
+  
     if params[:post][:subject].blank?
       @error_text = "You must enter a subject line for your post." and return
     end
@@ -81,15 +84,22 @@ class PostsController < ApplicationController
       Net::NNTP.start(NEWS_SERVER) do |nntp|
         new_message_id = nntp.post(post_string)[1][/<.*?>/]
       end
-    rescue Net::NNTPError
-      @error_text = 'NNTP Error: ' + $!.message
+    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
+      @error_text = 'Error: ' + error.message
     end
     
-    Net::NNTP.start(NEWS_SERVER) do |nntp|
-      Newsgroup.sync_group!(nntp, newsgroup.name, newsgroup.status)
+    begin
+      Net::NNTP.start(NEWS_SERVER) do |nntp|
+        Newsgroup.sync_group!(nntp, newsgroup.name, newsgroup.status)
+      end
+    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
+      @sync_error_text = "Your post was accepted by the news server, but an error occurred while attempting to sync the newsgroup it was posted to. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and you should see your post.\n\nThe exact error was: #{error.message}"
     end
     
     @new_post = Post.find_by_message_id(new_message_id)
+    if not @new_post
+      @sync_error_text = "Your post was accepted by the news server, but doesn't appear to actually exist; it may have been held for moderation or silently discarded (though neither of these should ever happen on CSH news). Wait a couple minutes and manually refresh the newsgroup to make sure this isn't a glitch in WebNews."
+    end
   end
   
   private
