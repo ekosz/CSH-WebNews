@@ -51,7 +51,9 @@ class PagesController < ApplicationController
     
     def get_activity_feed
       recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
-      recent_posts.reject!{ |post| post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] }
+      recent_posts.reject! do |post|
+        post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] || !post.newsgroup.posting_allowed?
+      end
       
       @active_threads = {}
       recent_posts.each do |post|
