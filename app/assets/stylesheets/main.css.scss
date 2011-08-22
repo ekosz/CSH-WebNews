@@ -178,7 +178,7 @@ input[type="submit"] { margin-right: 0; }
   }
   
   .read_only {
-    color: $text_light;
+    color: $text_light !important;
   }
 }
 

@@ -76,10 +76,10 @@ $('a.mark_read').live 'click', ->
   newsgroup = $(this).attr('data-newsgroup')
   if newsgroup
     group_item = $('#groups_list [data-name="' + newsgroup + '"]')
-    group_item.removeClass().find('.unread_count').remove()
+    group_item.removeClass('unread mine_reply mine_in_thread').find('.unread_count').remove()
     $('#next_unread').attr('href', '#') if $('#groups_list .unread_count').length == 0
   else
-    $('#groups_list li').removeClass().find('.unread_count').remove()
+    $('#groups_list li').removeClass('unread mine_reply mine_in_thread').find('.unread_count').remove()
     $('#next_unread').attr('href', '#')
   $('#groups_list [data-name="' + selected + '"]').addClass('selected')
   
