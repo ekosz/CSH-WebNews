@@ -4,6 +4,11 @@
       href="#!<%= post_path(post.newsgroup.name, post.number) %>"><%= post.subject %></a>
   </td>
   <td><%= post.author_name %></td>
-  <td><a href="#!<%= posts_path(post.newsgroup.name) %>"><%= post.newsgroup.name %></a></td>
+  <td>
+    <% if post.all_newsgroups.length > 1 %>
+      (multiple)
+    <% else %>
+      <a href="#!<%= posts_path(post.newsgroup.name) %>"><%= post.newsgroup.name %></a></td>
+    <% end %>
   <td><%= date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
 </tr>

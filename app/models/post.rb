@@ -17,6 +17,23 @@ class Post < ActiveRecord::Base
         split("\n").map{ |line| '>' + line }.join("\n") + "\n\n"
   end
   
+  def is_crossposted?
+    followup_newsgroup or all_newsgroups.length > 1
+  end
+  
+  def all_newsgroups
+    headers[/^Newsgroups: (.*)/i, 1].split(',').map(&:strip).
+      map{ |name| Newsgroup.find_by_name(name) }.reject(&:nil?)
+  end
+  
+  def followup_newsgroup
+    Newsgroup.find_by_name(headers[/^Followup-To: (.*)/i, 1])
+  end
+  
+  def in_newsgroup(newsgroup)
+    newsgroup.posts.find_by_message_id(message_id)
+  end
+  
   def parent
     Post.where(:message_id => parent_id, :newsgroup => newsgroup.name).first
   end

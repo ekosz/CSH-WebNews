@@ -6,8 +6,14 @@
     
     <div class="form_element">
       <%= f.label :newsgroup, 'Newsgroup:' %>
-      <%= f.select :newsgroup, @newsgroups.map{ |n| [n.name, n.name] }, :selected => @newsgroup.name %>
+      <%= f.select :newsgroup, @newsgroups.map{ |n| [n.name, n.name] },
+        :selected => @post.followup_newsgroup ? @post.followup_newsgroup.name : @newsgroup.name %>
     </div>
+    <% if @post.followup_newsgroup %>
+      <p class="explain">
+        (the author specified that replies should go to <%= @post.followup_newsgroup.name %>)
+      </p>
+    <% end %>
     
     <div class="form_element">
       <%= f.text_field :subject, :placeholder => 'Subject' %>

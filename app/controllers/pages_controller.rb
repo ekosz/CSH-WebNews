@@ -62,6 +62,13 @@ class PagesController < ApplicationController
           @active_threads[thread] = post.date
         end
       end
+      # Sub-optimal, could result in cross-posted threads with new replies not being shown
+      # if the replies are not in the thread's "primary" newsgroup (rarely happens)
+      @active_threads.reject! do |thread, date|
+        thread.is_crossposted? and
+          (thread.followup_newsgroup and thread.followup_newsgroup != thread.newsgroup) or
+          (thread.all_newsgroups.length > 1 and thread.newsgroup != thread.all_newsgroups[0])
+      end
     end
     
     def sync_posts

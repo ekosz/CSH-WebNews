@@ -19,6 +19,14 @@ if @current_user.open_links_in_new?
 else
   html_body = auto_link(html_body, :link => :urls, :sanitize => false)
 end
+
+other_groups = nil
+if post.is_crossposted?
+  other_groups = (post.all_newsgroups - [@newsgroup]).map{ |newsgroup|
+    '<a href="#!' + post_path(newsgroup.name, post.in_newsgroup(newsgroup).number) + '">' +
+      newsgroup.name + '</a>'
+  }
+end
 %>
 <div class="buttons">
   <% if @newsgroup.posting_allowed? %>
@@ -31,12 +39,37 @@ end
   <% end %>
 </div>
 <div id="post_content">
-  <h3><%= post.subject %></h3>
-  <div class="byline">Posted
-    <span class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></span>
-    by <span class="author">
-      <%= post.author_name %><%= ' <' + post.author_email + '>' if post.author_email %>
-    </span>
+  <div class="info">
+    <h3><%= post.subject %></h3>
+    <div class="byline">Posted
+      <span class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></span>
+      by <span class="author">
+        <%= post.author_name %><%= ' <' + post.author_email + '>' if post.author_email %>
+      </span>
+    </div>
+    <% if post.is_crossposted? %>
+      <div class="notice">
+        <span class="icon">!</span>
+        <% if not other_groups %>
+          The author specified that replies to this post should go to <%= post.followup_newsgroup.name %>.
+        <% else %>
+          This message was cross-posted to <%= raw other_groups.to_sentence %>.
+          <% if not post.followup_newsgroup %>
+            The author did not specify where replies should go. WebNews will post replies to whichever newsgroup you select, but other news clients may cross-post their replies.
+          <% elsif post.followup_newsgroup == @newsgroup %>
+            The author specified that replies should go here.
+          <% elsif other_groups.length == 1 %>
+            The author specified that replies should go <a href="#!<%=
+              post_path(post.followup_newsgroup.name, post.in_newsgroup(post.followup_newsgroup).number)
+            %>">there</a>.
+          <% else %>
+            The author specified that replies should go to <a href="#!<%=
+              post_path(post.followup_newsgroup.name, post.in_newsgroup(post.followup_newsgroup).number)
+            %>"><%= post.followup_newsgroup.name %></a>.
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="headers"><%= post.headers %></div>
   <div class="body"><%= raw html_body %></div>
