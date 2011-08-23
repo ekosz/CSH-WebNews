@@ -21,7 +21,9 @@ $('#next_unread').attr('href', '<%= next_unread_href %>')
 <% if @dashboard_active %>
 if location.hash.match '#!/home'
   document.title = '<%= j home_page_title %>'
+  scroll = $('#dashboard').scrollTop()
   $('#group_view').html '<%= j render('dashboard') %>'
+  $('#dashboard').scrollTop(scroll)
 <% end %>
 
 window.active_check_new = false
