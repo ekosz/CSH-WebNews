@@ -101,6 +101,48 @@ class Post < ActiveRecord::Base
     end
   end
   
+  def build_cancel_message(user, reason)
+    m = "From: #{user.real_name} <#{user.email}>"
+    m += "\nSubject: cmsg cancel #{message_id}"
+    m += "\nNewsgroups: " + headers[/^Newsgroups: (.*)/i, 1]
+    m += "\nControl: cancel #{message_id}"
+    m += "\nContent-Type: text/plain; charset=utf-8; format=flowed"
+    m += "\nUser-Agent: CSH-WebNews"
+    
+    m += "\n\nThe following message was canceled by #{user.real_name}:\n"
+    [
+      headers[/^From: .*/i],
+      headers[/^Subject: .*/i],
+      headers[/^Date: .*/i],
+      headers[/^Newsgroups: .*/i],
+      headers[/^Message-ID: .*/i]
+    ].each do |header|
+      m += "\n  #{header}"
+    end
+    
+    if not reason.blank?
+      m += "\n\n" + Post.flowed_encode('The reason given was: ' + reason)
+    end
+    
+    return m
+  end
+  
+  def self.build_message(p)
+    m = "From: #{p[:user].real_name} <#{p[:user].email}>"
+    m += "\nSubject: #{p[:subject].encode('US-ASCII', :invalid => :replace, :undef => :replace)}"
+    m += "\nNewsgroups: #{p[:newsgroup].name}"
+    if p[:reply_post]
+      existing_refs = p[:reply_post].headers[/^References: (.*)/i, 1]
+      existing_refs ? existing_refs += ' ' : existing_refs = ''
+      m += "\nReferences: #{existing_refs + p[:reply_post].message_id}"
+    end
+    m += "\nContent-Type: text/plain; charset=utf-8; format=flowed"
+    m += "\nUser-Agent: CSH-WebNews"
+    
+    m += "\n\n#{flowed_encode(p[:body])}"
+    return m
+  end
+  
   def self.import!(newsgroup, number, headers, body)
     attachments_stripped = false
     headers.gsub!(/\n( |\t)/, ' ')
@@ -179,20 +221,6 @@ class Post < ActiveRecord::Base
             :first_line => first_line,
             :headers => headers,
             :body => body)
-  end
-  
-  def self.build_message(p)
-    m = "From: #{p[:user].real_name} <#{p[:user].email}>"
-    m += "\nSubject: #{p[:subject].encode('US-ASCII', :invalid => :replace, :undef => :replace)}"
-    m += "\nNewsgroups: #{p[:newsgroup].name}"
-    if p[:reply_post]
-      existing_refs = p[:reply_post].headers[/^References: (.*)/i, 1]
-      existing_refs ? existing_refs += ' ' : existing_refs = ''
-      m += "\nReferences: #{existing_refs + p[:reply_post].message_id}"
-    end
-    m += "\nContent-Type: text/plain; charset=utf-8; format=flowed"
-    m += "\nUser-Agent: CSH-WebNews"
-    m += "\n\n#{flowed_encode(p[:body])}"
   end
   
   # See RFC 3676 for "format=flowed" spec

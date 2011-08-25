@@ -6,11 +6,13 @@ Webnews::Application.routes.draw do
   get '/check_new', :to => 'pages#check_new'
   get '/mark_read', :to => 'pages#mark_read'
   
-  get '/settings',              :to => 'users#edit',    :as => :edit_user
-  put '/settings',              :to => 'users#update',  :as => :update_user
+  get '/settings', :to => 'users#edit',   :as => :edit_user
+  put '/settings', :to => 'users#update', :as => :update_user
   
-  get '/compose',               :to => 'posts#new',     :as => :new_post
-  post '/compose',              :to => 'posts#create',  :as => :create_post
+  get '/compose',  :to => 'posts#new',    :as => :new_post
+  post '/compose', :to => 'posts#create', :as => :create_post
+  
+  get '/cancel',   :to => 'posts#destroy_confirm', :as => :confirm_destroy_post
   
   constraints :newsgroup => /[^\/]*/ do
     get '/:newsgroup/index',      :to => 'posts#index',   :as => :posts

@@ -34,8 +34,8 @@ end
       href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
   <% end %>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
-  <% if post.authored_by?(@current_user) and post.children.count == 0 %>
-    <!-- <a class="button red" href="#">Cancel Post</a> -->
+  <% if post.authored_by?(@current_user) and post.children.count == 0 and @newsgroup.posting_allowed? %>
+    <a class="button red" href="#?<%= confirm_destroy_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Cancel Post</a>
   <% end %>
 </div>
 <div id="post_content">

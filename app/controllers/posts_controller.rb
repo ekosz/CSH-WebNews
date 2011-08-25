@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_filter :get_newsgroup, :only => [:index, :show, :new]
-  before_filter :get_post, :only => [:show, :new]
+  before_filter :get_post, :only => [:show, :new, :destroy, :destroy_confirm]
   before_filter :get_newsgroups_for_posting, :only => [:new, :create]
 
   def index
@@ -56,7 +56,7 @@ class PostsController < ApplicationController
       @error_text = "You must enter a subject line for your post." and return
     end
     
-    newsgroup = @newsgroups.find_by_name(params[:post][:newsgroup])
+    newsgroup = @newsgroups.where_posting_allowed.find_by_name(params[:post][:newsgroup])
     if newsgroup.nil?
       @error_text = "The newsgroup you are trying to post to either doesn't exist or doesn't allow posting." and return
     end
@@ -100,6 +100,35 @@ class PostsController < ApplicationController
     if not @new_post
       @sync_error_text = "Your post was accepted by the news server, but doesn't appear to actually exist; it may have been held for moderation or silently discarded (though neither of these should ever happen on CSH news). Wait a couple minutes and manually refresh the newsgroup to make sure this isn't a glitch in WebNews."
     end
+  end
+  
+  def destroy
+    if not @post.newsgroup.posting_allowed?
+      @error_text = "The newsgroup containing the post you are trying to cancel is read-only. Posts in read-only newsgroups cannot be canceled." and return
+    end
+    
+    if @post.nil?
+      @error_text = "The post you are trying to cancel doesn't exist; it may have already been canceled. Try manually refreshing the newsgroup." and return
+    end
+    
+    begin
+      Net::NNTP.start(NEWS_SERVER) do |nntp|
+        nntp.post(@post.build_cancel_message(@current_user, params[:reason]))
+      end
+    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
+      @error_text = 'Error: ' + error.message
+    end
+    
+    begin
+      Net::NNTP.start(NEWS_SERVER) do |nntp|
+        Newsgroup.sync_group!(nntp, @post.newsgroup.name, @post.newsgroup.status)
+      end
+    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
+      @sync_error_text = "Your cancel was accepted by the news server, but an error occurred while attempting to sync the newsgroup containing the canceled post. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and the post should be gone.\n\nThe exact error was: #{error.message}"
+    end
+  end
+  
+  def destroy_confirm
   end
   
   private
