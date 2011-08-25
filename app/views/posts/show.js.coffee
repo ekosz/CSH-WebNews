@@ -31,7 +31,7 @@ select_post = (showing) ->
 
 $('#post_view').html '<%= j render(@post) %>'
 $('#post_view .headers').hide()
-document.title = '<%= @newsgroup.name %> \u00bb <%= j @post.subject %>'
+document.title = '<%= @newsgroup.name %> \u00bb <%= raw j(@post.subject) %>'
 
 if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0
   $('#group_view').empty().append(chunks.spinner.clone())
