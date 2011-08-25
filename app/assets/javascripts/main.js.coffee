@@ -1,9 +1,24 @@
 @chunks = {}
 @check_new_delay = 15000
 @check_new_retry_delay = 5000
+@draft_save_interval = 2000
 window.active_navigation = false
 window.active_scroll_load = false
 window.active_check_new = false
+window.draft_interval_func = false
+
+jQuery.fn.outerHTML = ->
+  $('<div>').append(this.eq(0).clone()).html()
+
+@set_draft_interval = ->
+  $('a.resume_draft').show()
+  window.draft_interval_func = setInterval (->
+    localStorage['draft_html'] = $('#dialog').outerHTML()
+    localStorage['draft_form'] = JSON.stringify($('#dialog form').serializeArray())
+  ), draft_save_interval
+
+@clear_draft_interval = ->
+  clearInterval(window.draft_interval_func)
 
 @toggle_thread_expand = (tr) ->
   if tr.find('.expandable').length > 0
@@ -43,6 +58,8 @@ $(document).ready ->
   chunks.ajax_error = $('#loader #ajax_error').clone()
   $('#loader').remove()
   
+  $('a.resume_draft').hide() if not localStorage['draft_form']
+  
   if $('#new_user').length > 0
     $('body').append(chunks.overlay.clone())
     $.getScript '/new_user'
@@ -58,6 +75,11 @@ $(document).ready ->
 
 $('a[href="#"]').live 'click', ->
   return false
+
+$('a.new_draft').live 'click', (e) ->
+  if localStorage['draft_form'] and not confirm('Really abandon your saved draft and start a new post?')
+    e.stopImmediatePropagation()
+    return false
 
 $('a[href^="#?/"]').live 'click', ->
   $('body').append(chunks.overlay.clone())
@@ -96,8 +118,26 @@ $('a.mark_read').live 'click', ->
   $.getScript @href.replace('#~', ''), success
   return false
 
+$('a.minimize_draft').live 'click', ->
+  localStorage['draft_html'] = $('#dialog').outerHTML()
+  localStorage['draft_form'] = JSON.stringify($('#dialog form').serializeArray())
+
 $('a.dialog_cancel').live 'click', ->
+  clear_draft_interval()
   $('#overlay').remove()
+
+$('a.clear_draft').live 'click', ->
+  localStorage.removeItem('draft_html')
+  localStorage.removeItem('draft_form')
+  $('a.resume_draft').hide()
+
+$('a.resume_draft').live 'click', ->
+  $('body').append(chunks.overlay.clone())
+  $('#overlay').append(localStorage['draft_html'])
+  for elem in JSON.parse(localStorage['draft_form'])
+    $('#dialog form [name="' + elem.name + '"]').val(elem.value)
+  $('#post_body').putCursorAtEnd() if $('#post_body').val() != ''
+  set_draft_interval()
 
 $('input[type="submit"]').live 'click', ->
   $('#dialog .buttons').hide()

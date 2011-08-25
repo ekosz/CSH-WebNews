@@ -22,6 +22,7 @@
     <div class="form_element">
       <%= f.text_area :body %>
     </div>
+    <p class="explain">Drafts are saved automatically in your browser's local storage. Saved drafts will not be available if you switch browsers or devices.</p>
     
     <% if @post %>
       <%= f.hidden_field :reply_newsgroup, :value => @post.newsgroup.name %>
@@ -30,7 +31,9 @@
     
     <div class="buttons">
       <%= f.submit 'Post', :class => 'button green' %>
-      <a href="#" class="button red dialog_cancel">Cancel</a>
+      <a href="#" class="button yellow dialog_cancel minimize_draft">Minimize</a>
+      <a href="#" class="button red dialog_cancel clear_draft"
+        data-confirm="Really abandon this post?">Abandon</a>
     </div>
   <% end %>
   

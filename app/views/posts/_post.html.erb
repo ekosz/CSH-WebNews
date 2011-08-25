@@ -30,7 +30,7 @@ end
 %>
 <div class="buttons">
   <% if @newsgroup.posting_allowed? %>
-    <a class="button"
+    <a class="button new_draft"
       href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
   <% end %>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>

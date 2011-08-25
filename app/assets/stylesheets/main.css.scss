@@ -146,13 +146,18 @@ i { font-style: italic; }
   }
   
   &.red {
-    border-color: #b00;
-    &:hover { background-color: #b00; }
+    border-color: #c00;
+    &:hover { background-color: #c00; }
   }
   
   &.blue {
     border-color: #77f;
     &:hover { background-color: #77f; }
+  }
+  
+  &.yellow {
+    border-color: #cc0;
+    &:hover { background-color: #cc0; }
   }
   
   &#next_unread[href="#"] {
