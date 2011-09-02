@@ -25,7 +25,7 @@ class PostsController < ApplicationController
     else
       @posts = @newsgroup.posts.
         where('parent_id = ? and number < ?', '', @from).
-        order('number DESC').limit(10)
+        order('number DESC').limit(15)
     end
     
     @more = @posts.any? && @newsgroup.posts.where('number < ?', @posts.last.number).any?
