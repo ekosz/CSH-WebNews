@@ -21,6 +21,14 @@ class Post < ActiveRecord::Base
     followup_newsgroup or all_newsgroups.length > 1
   end
   
+  def is_reparented?
+    parent_id != original_parent_id
+  end
+  
+  def is_orphaned?
+    is_reparented? and parent_id == ''
+  end
+  
   def all_newsgroups
     headers[/^Newsgroups: (.*)/i, 1].split(',').map(&:strip).
       map{ |name| Newsgroup.find_by_name(name) }.reject(&:nil?)
@@ -48,6 +56,14 @@ class Post < ActiveRecord::Base
     else
       parent.thread_parent
     end
+  end
+  
+  def original_parent_id
+    headers[/^References: (.*)/i, 1].to_s.split.map{ |r| r[/<.*>/] }[-1] || ''
+  end
+  
+  def original_parent
+    Post.where(:message_id => original_parent_id).first
   end
   
   def authored_by?(user)
@@ -190,12 +206,35 @@ class Post < ActiveRecord::Base
     body.rstrip!
     body += "\n\n--- Attachments stripped by WebNews ---" if attachments_stripped
     
+    date = DateTime.parse(headers[/^Date: (.*)/i, 1])
     subject = first_line = headers[/^Subject: (.*)/i, 1]
-    parent_id = headers[/^References: (.*)/i, 1].to_s.split[-1] || ''
+    references = headers[/^References: (.*)/i, 1].to_s.split.map{ |r| r[/<.*>/] }
+    parent_id = references[-1] || ''
+    possible_thread_id = references[0] || ''
     
+    # Note: Doesn't try to fix replies ("Re:") that simply have no References at all
     if parent_id != '' and
         not where(:message_id => parent_id, :newsgroup => newsgroup.name).exists?
-      parent_id = ''
+      if where(:message_id => parent_id).exists?
+        parent_id = ''
+      else
+        if possible_thread_id != '' and
+            where(:message_id => possible_thread_id, :newsgroup => newsgroup.name).exists?
+          parent_id = possible_thread_id
+        else
+          possible_thread_parent =
+            where('subject = ? and newsgroup = ? and date < ?',
+              subject.sub(/Re: /i, ''), newsgroup.name, date).order('date DESC').first ||
+            where('subject = ? and newsgroup = ? and date < ?',
+              subject, newsgroup.name, date).order('date').first
+          
+          if possible_thread_parent
+            parent_id = possible_thread_parent.message_id
+          else
+            parent_id = ''
+          end
+        end
+      end
     end
     
     if subject[/^Re:/i] and parent_id != ''
@@ -215,7 +254,7 @@ class Post < ActiveRecord::Base
             :number => number,
             :subject => subject,
             :author => headers[/^From: (.*)/i, 1],
-            :date => DateTime.parse(headers[/^Date: (.*)/i, 1]),
+            :date => date,
             :message_id => headers[/^Message-ID: (.*)/i, 1],
             :parent_id => parent_id,
             :first_line => first_line,

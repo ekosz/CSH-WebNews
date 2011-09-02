@@ -20,7 +20,7 @@ else
   html_body = auto_link(html_body, :link => :urls, :sanitize => false)
 end
 
-other_groups = nil
+other_groups = []
 if post.is_crossposted?
   other_groups = (post.all_newsgroups - [@newsgroup]).map{ |newsgroup|
     '<a href="#!' + post_path(newsgroup.name, post.in_newsgroup(newsgroup).number) + '">' +
@@ -47,15 +47,32 @@ end
         <%= post.author_name %><%= ' <' + post.author_email + '>' if post.author_email %>
       </span>
     </div>
-    <% if post.is_crossposted? %>
+    <% if post.is_reparented? %>
       <div class="notice">
         <span class="icon">!</span>
-        <% if not other_groups %>
+        <% if post.is_orphaned? %>
+          <% if post.original_parent %>
+            This message is a reply to <a href="#!<%=
+              post_path(post.original_parent.newsgroup.name, post.original_parent.number)
+            %>"><%= post.original_parent.subject %></a> in <%= post.original_parent.newsgroup.name %>.
+          <% else %>
+            This message is orphaned. It may be a reply to an off-group email message.
+          <% end %>
+        <% else %>
+          This message was de-threaded. WebNews tried to guess where it belongs, but this may not be correct.
+        <% end %>
+      </div>
+    <% end %>
+    <% if post.is_crossposted? and not
+        (other_groups.empty? && post.followup_newsgroup && post.newsgroup == post.followup_newsgroup) %>
+      <div class="notice">
+        <span class="icon">!</span>
+        <% if other_groups.empty? %>
           The author specified that replies to this post should go to <%= post.followup_newsgroup.name %>.
         <% else %>
           This message was cross-posted to <%= raw other_groups.to_sentence %>.
           <% if not post.followup_newsgroup %>
-            The author did not specify where replies should go. WebNews will post replies to whichever newsgroup you select, but other news clients may cross-post their replies.
+            The author did not specify where replies should go.
           <% elsif post.followup_newsgroup == @newsgroup %>
             The author specified that replies should go here.
           <% elsif other_groups.length == 1 %>
