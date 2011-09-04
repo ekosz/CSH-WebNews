@@ -84,16 +84,16 @@ class PostsController < ApplicationController
       Net::NNTP.start(NEWS_SERVER) do |nntp|
         new_message_id = nntp.post(post_string)[1][/<.*?>/]
       end
-    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
-      @error_text = 'Error: ' + error.message
+    rescue
+      @error_text = 'Error: ' + $!.message
     end
     
     begin
       Net::NNTP.start(NEWS_SERVER) do |nntp|
         Newsgroup.sync_group!(nntp, newsgroup.name, newsgroup.status)
       end
-    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
-      @sync_error_text = "Your post was accepted by the news server, but an error occurred while attempting to sync the newsgroup it was posted to. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and you should see your post.\n\nThe exact error was: #{error.message}"
+    rescue
+      @sync_error_text = "Your post was accepted by the news server, but an error occurred while attempting to sync the newsgroup it was posted to. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and you should see your post.\n\nThe exact error was: #{$!.message}"
     end
     
     @new_post = Post.find_by_message_id(new_message_id)
@@ -115,16 +115,16 @@ class PostsController < ApplicationController
       Net::NNTP.start(NEWS_SERVER) do |nntp|
         nntp.post(@post.build_cancel_message(@current_user, params[:reason]))
       end
-    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
-      @error_text = 'Error: ' + error.message
+    rescue
+      @error_text = 'Error: ' + $!.message
     end
     
     begin
       Net::NNTP.start(NEWS_SERVER) do |nntp|
         Newsgroup.sync_group!(nntp, @post.newsgroup.name, @post.newsgroup.status)
       end
-    rescue Net::NNTPError, IOError, TimeoutError, SocketError => error
-      @sync_error_text = "Your cancel was accepted by the news server, but an error occurred while attempting to sync the newsgroup containing the canceled post. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and the post should be gone.\n\nThe exact error was: #{error.message}"
+    rescue
+      @sync_error_text = "Your cancel was accepted by the news server, but an error occurred while attempting to sync the newsgroup containing the canceled post. This may be a transient issue: Wait a couple minutes and manually refresh the newsgroup, and the post should be gone.\n\nThe exact error was: #{$!.message}"
     end
   end
   
