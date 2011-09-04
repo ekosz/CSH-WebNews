@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   
     def authenticate
       if not request.env['WEBAUTH_USER']
-        render :file => "#{RAILS_ROOT}/public/auth.html"
+        render :file => "#{Rails.root}/public/auth.html", :layout => false
       end
     end
     
