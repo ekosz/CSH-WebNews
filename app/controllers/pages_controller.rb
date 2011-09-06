@@ -67,7 +67,8 @@ class PagesController < ApplicationController
       @active_threads.reject! do |thread, date|
         thread.is_crossposted? and
           (thread.followup_newsgroup and thread.followup_newsgroup != thread.newsgroup) or
-          (thread.all_newsgroups.length > 1 and thread.newsgroup != thread.all_newsgroups[0])
+          (!thread.followup_newsgroup and
+            thread.all_newsgroups.length > 1 and thread.newsgroup != thread.all_newsgroups[0])
       end
     end
     

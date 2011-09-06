@@ -18,7 +18,7 @@ class Post < ActiveRecord::Base
   end
   
   def is_crossposted?
-    followup_newsgroup or all_newsgroups.length > 1
+    !followup_newsgroup.nil? or all_newsgroups.length > 1
   end
   
   def is_reparented?
