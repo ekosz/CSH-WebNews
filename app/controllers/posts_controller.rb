@@ -16,11 +16,12 @@ class PostsController < ApplicationController
     
     if params[:showing]
       @showing = @newsgroup.posts.find_by_number(params[:showing])
+      showing_thread = @showing.thread_parent
       @posts = @newsgroup.posts.
-        where('parent_id = ? and number >= ?', '', @showing.number).
+        where('parent_id = ? and number >= ?', '', showing_thread.number).
         order('number DESC')
       @posts += @newsgroup.posts.
-        where('parent_id = ? and number < ?', '', @showing.number).
+        where('parent_id = ? and number < ?', '', showing_thread.number).
         order('number DESC').limit(10)
     else
       @posts = @newsgroup.posts.
