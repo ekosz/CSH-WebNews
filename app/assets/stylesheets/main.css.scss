@@ -251,6 +251,12 @@ input[type="submit"] { margin-right: 0; }
     td {
       color: $text_light;
       padding-right: 15px;
+      white-space: nowrap;
+      &.subject { 
+        white-space: normal;
+        text-indent: -16px;
+        padding-left: 16px;
+      }
     }
   }
 }

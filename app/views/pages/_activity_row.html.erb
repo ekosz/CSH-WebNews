@@ -1,5 +1,5 @@
 <tr>
-  <td>
+  <td class="subject">
     <a class="<%= post.personal_class_for_user(@current_user) %><%= unread ? ' unread' : '' %>"
       href="#!<%= post_path(post.newsgroup.name, post.number) %>"><%= post.subject %></a>
   </td>
