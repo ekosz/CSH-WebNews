@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   require 'net/nntp'
   protect_from_forgery
+  before_filter :set_request_for_dev
   before_filter :authenticate, :check_maintenance, :get_or_create_user
   
   private
@@ -38,5 +39,12 @@ class ApplicationController < ActionController::Base
     
     def get_next_unread_post
       @next_unread_post = @current_user.unread_posts.order('newsgroup, date').first
+    end
+
+    def set_request_for_dev
+      if Rails.env.development?
+        request.env['WEBAUTH_USER'] = 'dev'
+        request.env['WEBAUTH_LDAP_CN'] = 'Devlop Err'
+      end
     end
 end
