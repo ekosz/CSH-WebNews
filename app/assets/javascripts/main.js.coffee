@@ -36,7 +36,6 @@ jQuery.fn.outerHTML = ->
 
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
-    $('#dialog_wrapper').remove()
     window.active_navigation.abort() if window.active_navigation
     window.active_navigation = $.getScript location.hash.replace('#!', '')
     
