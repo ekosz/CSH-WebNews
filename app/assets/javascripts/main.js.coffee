@@ -160,6 +160,10 @@ $('#posts_list tbody tr').live 'click', ->
   tr.addClass('selected')
   return false
 
+$(window).resize ->
+  if $('#post_view .buttons').length > 0
+    $('#post_view .info h3').css('margin-right', $('#post_view .buttons').outerWidth() + 'px')
+
 $('a, input').live 'mousedown', -> this.style.outlineStyle = 'none'
 $('a, input').live 'blur', -> this.style.outlineStyle = ''
 
