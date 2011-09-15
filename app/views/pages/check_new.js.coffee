@@ -26,6 +26,11 @@ if location.hash.match '#!/home'
   $('#dashboard').scrollTop(scroll)
 <% end %>
 
+$('#sync_warning').remove()
+<% if @show_sync_warning %>
+$('#groups_list h2').after('<%= j render('shared/sync_warning') %>')
+<% end %>
+
 window.active_check_new = false
 setTimeout (->
   window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)

@@ -515,3 +515,11 @@ input[type="submit"] { margin-right: 0; }
   background-color: #ffc;
   border-bottom: 2px solid #ee9;
 }
+
+#sync_warning {
+  white-space: normal;
+  padding: 5px;
+  margin-bottom: 0.5em;
+  border: 1px solid #ee9;
+  background-color: #ffc;
+}

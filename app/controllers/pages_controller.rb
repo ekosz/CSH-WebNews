@@ -8,7 +8,6 @@ class PagesController < ApplicationController
         @current_user.real_name = request.env['WEBAUTH_LDAP_CN']
         @current_user.save!
         sync_posts
-        get_next_unread_post
       end
       
       wants.js do
@@ -26,7 +25,6 @@ class PagesController < ApplicationController
   
   def check_new
     sync_posts
-    get_next_unread_post
     if params[:location] == '#!/home'
       @dashboard_active = true
       get_activity_feed
@@ -75,7 +73,8 @@ class PagesController < ApplicationController
     
     def sync_posts
       if not File.exists?('tmp/syncing.txt') and
-          (not File.exists?('tmp/lastsync.txt') or File.mtime('tmp/lastsync.txt') < 1.minute.ago)
+          (not File.exists?('tmp/lastsync.txt') or
+            File.mtime('tmp/lastsync.txt') < 1.minute.ago)
         begin
           Newsgroup.sync_all!
         rescue
@@ -84,5 +83,12 @@ class PagesController < ApplicationController
           puts "##################\n\n"
         end
       end
+      get_last_sync_time
+      get_next_unread_post
+    end
+    
+    def get_last_sync_time
+      @last_sync_time = File.mtime('tmp/lastsync.txt')
+      @show_sync_warning = true if @last_sync_time < 2.minutes.ago
     end
 end

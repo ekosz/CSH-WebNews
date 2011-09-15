@@ -17,6 +17,7 @@
 
 <div id="groups_list">
   <h2>Newsgroups</h2>
+  <%= render 'shared/sync_warning' if @show_sync_warning %>
   <nav>
     <%= render 'newsgroups/index' %>
   </nav>
