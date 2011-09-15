@@ -17,8 +17,12 @@ class Post < ActiveRecord::Base
         split("\n").map{ |line| '>' + line }.join("\n") + "\n\n"
   end
   
-  def is_crossposted?
-    !followup_newsgroup.nil? or all_newsgroups.length > 1
+  def is_crossposted?(quick = false)
+    if quick
+      headers[/^Newsgroups: (.*)/i, 1].split(',').length > 1
+    else
+      in_all_newsgroups.length > 1
+    end
   end
   
   def is_reparented?
@@ -29,17 +33,22 @@ class Post < ActiveRecord::Base
     is_reparented? and parent_id == ''
   end
   
-  def all_newsgroups
-    headers[/^Newsgroups: (.*)/i, 1].split(',').map(&:strip).
-      map{ |name| Newsgroup.find_by_name(name) }.reject(&:nil?)
-  end
-  
   def followup_newsgroup
     Newsgroup.find_by_name(headers[/^Followup-To: (.*)/i, 1])
   end
   
   def in_newsgroup(newsgroup)
     newsgroup.posts.find_by_message_id(message_id)
+  end
+  
+  def in_all_newsgroups
+    headers[/^Newsgroups: (.*)/i, 1].
+      split(',').
+      map(&:strip).
+      map{ |name| Newsgroup.find_by_name(name) }.
+      reject(&:nil?).
+      map{ |newsgroup| in_newsgroup(newsgroup) }.
+      reject(&:nil?)
   end
   
   def parent

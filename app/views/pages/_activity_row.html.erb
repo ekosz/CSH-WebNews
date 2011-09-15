@@ -5,7 +5,7 @@
   </td>
   <td><%= post.author_name %></td>
   <td>
-    <% if post.all_newsgroups.length > 1 %>
+    <% if post.is_crossposted?(true) %>
       (multiple)
     <% else %>
       <a href="#!<%= posts_path(post.newsgroup.name) %>"><%= post.newsgroup.name %></a></td>

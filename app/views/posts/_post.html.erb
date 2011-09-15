@@ -22,9 +22,9 @@ end
 
 other_groups = []
 if post.is_crossposted?
-  other_groups = (post.all_newsgroups - [@newsgroup]).map{ |newsgroup|
-    '<a href="#!' + post_path(newsgroup.name, post.in_newsgroup(newsgroup).number) + '">' +
-      newsgroup.name + '</a>'
+  other_groups = (post.in_all_newsgroups - [post]).map{ |other_post|
+    '<a href="#!' + post_path(other_post.newsgroup.name, other_post.number) + '">' +
+      other_post.newsgroup.name + '</a>'
   }
 end
 %>
@@ -56,18 +56,18 @@ end
               post_path(post.original_parent.newsgroup.name, post.original_parent.number)
             %>"><%= post.original_parent.subject %></a> in <%= post.original_parent.newsgroup.name %>.
           <% else %>
-            This message is orphaned. It may be a reply to an off-group email message.
+            This message is orphaned. It may be a reply to a canceled message or an off-group email.
           <% end %>
         <% else %>
           This message was de-threaded. WebNews tried to guess where it belongs, but this may not be correct.
         <% end %>
       </div>
     <% end %>
-    <% if post.is_crossposted? and not
-        (other_groups.empty? && post.followup_newsgroup && post.newsgroup == post.followup_newsgroup) %>
+    <% if post.is_crossposted? or
+        (post.followup_newsgroup and not post.newsgroup == post.followup_newsgroup) %>
       <div class="notice">
         <span class="icon">!</span>
-        <% if other_groups.empty? %>
+        <% if not post.is_crossposted? %>
           The author specified that replies to this post should go to <%= post.followup_newsgroup.name %>.
         <% else %>
           This message was cross-posted to <%= raw other_groups.to_sentence %>.
