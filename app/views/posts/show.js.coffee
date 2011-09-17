@@ -10,7 +10,7 @@ else
 <% else %>
 
 select_post = (showing) ->
-  post_tr = $('#posts_list tr[data-number="<%= @post.number %>"]')
+  post_tr = $('#posts_list tr[data-id="<%= @post.id %>"]')
   
   if post_tr.is(':hidden') or (showing and post_tr.attr('data-parent') == '')
     parent = if post_tr.is(':hidden') then post_tr.prevAll('[data-level="1"]:first') else post_tr
@@ -31,9 +31,12 @@ select_post = (showing) ->
 
 $('#post_view').html '<%= j render(@post) %>'
 $('#post_view .headers').hide()
-document.title = '<%= @newsgroup.name %> \u00bb <%= raw j(@post.subject) %>'
 
-if $('#posts_list tr[data-number="<%= @post.number %>"]').length == 0
+<% if not @search_mode %>
+document.title = '<%= @newsgroup.name %> \u00bb <%= raw j(@post.subject) %>'
+<% end %>
+
+if $('#posts_list tr[data-id="<%= @post.id %>"]').length == 0
   $('#group_view').empty().append(chunks.spinner.clone())
   $.getScript '<%= posts_path(@newsgroup.name) %>?showing=<%= @post.number %>', -> select_post(true)
 else

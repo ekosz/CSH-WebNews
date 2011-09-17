@@ -1,0 +1,21 @@
+<%
+expanded ||= false
+tr_class ||= post.personal_class_for_user(@current_user)
+%>
+
+<tr class="<%= (post.unread_for_user?(@current_user) ? 'unread ' : '') + tr_class.to_s %>"
+  data-id="<%= post.id %>"
+  data-level="<%= level %>"
+  data-date="<%= post.date.to_datetime %>"
+  data-parent="<%= post.parent ? post.parent.number : '' %>">
+  <td>
+    <% (level - 1).times do %><div class="indent"><% end %>
+    <div class="indent<%= expanded ? ' expanded' : '' %>">
+    <a href="#<%= @search_mode ? '~' : '!' %><%= post_path(post.newsgroup.name, post.number) %><%= @search_mode ? '?search_mode=true' : '' %>">
+      <%= @search_mode ? post.subject : post.first_line %></a>
+    <% level.times do %></div><% end %>
+  </td>
+  <% if @search_mode and not @newsgroup %><td><%= post.newsgroup.name %></td><% end %>
+  <td><%= post.author_name %></td>
+  <td><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
+</tr>

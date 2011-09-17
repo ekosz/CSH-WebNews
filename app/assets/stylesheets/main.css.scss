@@ -30,20 +30,6 @@ body, select, input, textarea { color: $text_normal; }
   text-overflow: ellipsis;
 }
 
-.form_element {
-  margin-bottom: 1em;
-}
-
-fieldset {
-  border: 1px solid $border_light;
-  border-radius: 2px;
-  margin-bottom: 1em;
-  padding: 0 10px;
-  padding-top: 0.5em;
-  .form_element { margin-bottom: 0.75em; }
-  legend { color: $text_light; }
-}
-
 h2 {
   font-size: 200%;
   margin-bottom: 0.5em;
@@ -322,7 +308,7 @@ input[type="submit"] { margin-right: 0; }
       }
       
       th {
-        width: 20%;
+        width: 175px;
         text-align: left;
         background-color: $bg_light;
         border: 1px solid $border_light;
@@ -493,10 +479,32 @@ input[type="submit"] { margin-right: 0; }
     margin-bottom: 1.25em;
   }
   
+  .form_element {
+    margin-bottom: 1em;
+  }
+
+  fieldset {
+    border: 1px solid $border_light;
+    border-radius: 2px;
+    margin-bottom: 1em;
+    padding: 0 10px;
+    padding-top: 0.5em;
+    .form_element { margin-bottom: 0.75em; }
+    legend { color: $text_light; }
+  }
+  
   input[type=text], textarea {
     width: 99%;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  
+  .aligned_field {
+    label:first-child { width: 90px; display: inline-block; }
+    input[type=text] { width: 350px; }
+    input[type=checkbox] { vertical-align: middle; margin-left: 20px; }
+    input.date { width: auto; }
+    p { clear: both; margin-left: 90px; margin-top: 0.25em; }
   }
 }
 

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   require 'net/nntp'
+  require 'shellwords'
   protect_from_forgery
   before_filter :authenticate, :check_maintenance, :get_or_create_user
   
@@ -36,7 +37,15 @@ class ApplicationController < ActionController::Base
       end
     end
     
+    def get_newsgroups
+      @newsgroups = Newsgroup.unscoped.order('status DESC, name')
+    end
+    
     def get_next_unread_post
       @next_unread_post = @current_user.unread_posts.order('newsgroup, date').first
+    end
+    
+    def form_error(error_text)
+      render :partial => 'shared/form_error', :object => error_text
     end
 end

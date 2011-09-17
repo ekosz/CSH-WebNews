@@ -12,6 +12,7 @@ end
 
 gem 'rails_autolink'
 gem 'coffeebeans'
+gem 'chronic'
 
 # ExecJS engine
 gem 'therubyracer'

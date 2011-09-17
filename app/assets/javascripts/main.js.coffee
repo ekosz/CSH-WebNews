@@ -151,7 +151,11 @@ $('#posts_list tbody tr').live 'click', ->
   tr = $(this)
   
   if not tr.hasClass('selected')
-    location.hash = tr.find('a').attr('href')
+    href = tr.find('a').attr('href')
+    if href.substring(0, 3) == '#~/'
+      $.getScript href.replace('#~', '')
+    else
+      location.hash = href
   
   toggle_thread_expand(tr)
   

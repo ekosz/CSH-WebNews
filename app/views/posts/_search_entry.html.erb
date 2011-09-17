@@ -1,0 +1,43 @@
+<div id="dialog">
+  <h2>Search</h2>
+  
+  <%= form_tag search_path, :method => 'get', :remote => true do %>
+    
+    <div class="form_element aligned_field">
+      <%= label_tag :newsgroup, 'Newsgroup:' %><%= select_tag :newsgroup,
+        options_for_select(
+          @newsgroups.map{ |n| [n.name, n.name] }, @newsgroup ? @newsgroup.name : nil
+        ), :prompt => '(all newsgroups)' %>
+    </div>
+    
+    <div class="form_element aligned_field">
+      <%= label_tag :keywords, 'Keywords:' %><%= text_field_tag :keywords, params[:keywords] %>
+      <%= check_box_tag :subject_only, 'true', params[:subject_only] %>
+      <%= label_tag :subject_only, 'only in subject lines' %>
+      <p class="explain">Use "quotes" to search for phrases, minus (-) for exclusion</p>
+    </div>
+    
+    <div class="form_element aligned_field">
+      <%= label_tag :author, 'By author:' %><%= text_field_tag :author, params[:author] %>
+      <p class="explain">Enter all or part of a full name, username, or email address</p>
+    </div>
+    
+    <div class="form_element aligned_field">
+      <%= label_tag :date_from, 'In date range:' %><%= text_field_tag :date_from,
+        params[:date_from], :class => 'date' %>
+      <%= label_tag :date_to, 'to' %>
+      <%= text_field_tag :date_to, params[:date_to], :class => 'date' %>
+      <p class="explain">Enter absolute or relative dates in any format ("june 2009", "9/17/2011", "3 weeks ago")</p>
+    </div>
+    
+    <%= hidden_field_tag :validate, true %>
+    
+    <div class="buttons">
+      <%= submit_tag 'Search', :class => 'button' %>
+      <a href="#" class="button dialog_cancel">Cancel</a>
+    </div>
+  <% end %>
+  
+  <div class="loading"></div>
+  <div class="errors"></div>
+</div>

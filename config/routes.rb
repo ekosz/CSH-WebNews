@@ -14,6 +14,9 @@ Webnews::Application.routes.draw do
   
   get '/cancel',   :to => 'posts#destroy_confirm', :as => :confirm_destroy_post
   
+  get '/search',   :to => 'posts#search', :as => :search
+  get '/search_entry', :to => 'posts#search_entry', :as => :search_entry
+  
   constraints :newsgroup => /[^\/]*/ do
     get '/:newsgroup/index',      :to => 'posts#index',   :as => :posts
     get '/:newsgroup/:number',    :to => 'posts#show',    :as => :post

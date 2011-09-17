@@ -1,29 +1,19 @@
-<% parent = post.parent %>
-<% children = post.children %>
 <%
+children = post.children
+
 # If level != 1, mine_in_thread is provided by the next recursion level up
 mine_in_thread = post.user_in_thread?(@current_user) if level == 1
 
 # Can't use personal_class_for_user due to mine_in_thread caching stuff
 tr_class = case
   when post.authored_by?(@current_user) then 'mine'
-  when parent && parent.authored_by?(@current_user) then 'mine_reply'
+  when post.parent && post.parent.authored_by?(@current_user) then 'mine_reply'
   when mine_in_thread then 'mine_in_thread'
 end
 %>
-<tr class="<%= (post.unread_for_user?(@current_user) ? 'unread ' : '') + tr_class.to_s %>"
-  data-level="<%= level %>"
-  data-number="<%= post.number %>"
-  data-parent="<%= parent ? parent.number : '' %>">
-  <td>
-    <% (level - 1).times do %><div class="indent"><% end %>
-    <div class="indent<%= children.count > 0 ? ' expanded' : '' %>">
-    <a href="#!<%= post_path(@newsgroup.name, post.number) %>"><%= post.first_line %></a>
-    <% level.times do %></div><% end %>
-  </td>
-  <td><%= post.author_name %></td>
-  <td><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></td>
-</tr>
+
+<%= render :partial => 'post_row', :locals => {
+  :post => post, :level => level, :tr_class => tr_class, :expanded => (children.count > 0) } %>
 
 <% children.each do |child| %>
   <%= render :partial => 'post_tree',

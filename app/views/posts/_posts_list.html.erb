@@ -1,4 +1,8 @@
 <% @posts.each do |post| %>
-  <%= render :partial => 'post_tree',
-    :locals => { :post => post, :level => 1, :mine_in_thread => false } %>
+  <% if @search_mode %>
+    <%= render :partial => 'post_row', :locals => { :post => post, :level => 1 } %>
+  <% else %>
+    <%= render :partial => 'post_tree',
+      :locals => { :post => post, :level => 1, :mine_in_thread => false } %>
+  <% end %>
 <% end %>

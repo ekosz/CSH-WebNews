@@ -1,0 +1,43 @@
+<div class="buttons">
+  <% if @search_mode %>
+    <span class="explain">Searching <%= @newsgroup ? @newsgroup.name : 'all newsgroups' %></span>
+    <a class="button" href="#?<%= search_entry_path %>?<%=
+      request.fullpath.split('?')[1] %>">Revise Search</a>
+  <% else %>
+    <a class="new_posts" href="#!<%= posts_path(@newsgroup.name) %>"></a>
+    <% if @newsgroup.posting_allowed? %>
+      <a class="button new_draft" href="#?<%= new_post_path(:newsgroup => @newsgroup.name) %>">Post New</a>
+    <% else %>
+      <span class="explain">This newsgroup is read-only.</span>
+    <% end %>
+    <a class="button" href="#?<%= search_entry_path(:newsgroup => @newsgroup.name) %>">Search</a>
+    <a class="button mark_read" data-newsgroup="<%= @newsgroup.name %>"
+      href="#~/mark_read?newsgroup=<%= URI.encode_www_form_component(@newsgroup.name) %>">Mark All Read</a>
+  <% end %>
+</div>
+<div id="group_header">
+  <h2><%= @search_mode ? 'Search Results' : @newsgroup.name %></h2>
+</div>
+<div id="posts_list">
+  <table>
+    <thead>
+      <tr>
+        <% cols = 3 %>
+        <th>Subject</th>
+        <% if @search_mode and not @newsgroup %><% cols = 4 %><th>Newsgroup</th><% end %>
+        <th>Author</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= yield %>
+    </tbody>
+    <tfoot id="posts_load"<%= @more ? '' : ' data-nomore="true"' %>>
+      <% if @more %>
+        <th colspan="<%= cols %>" class="spinner">Loading more posts...</th>
+      <% else %>
+        <th colspan="<%= cols %>">No more posts!</th>
+      <% end %>
+    </tfoot>
+  </table>
+</div>

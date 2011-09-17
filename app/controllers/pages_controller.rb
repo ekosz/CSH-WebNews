@@ -43,10 +43,6 @@ class PagesController < ApplicationController
   
   private
     
-    def get_newsgroups
-      @newsgroups = Newsgroup.unscoped.order('status DESC, name')
-    end
-    
     def get_activity_feed
       recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
       recent_posts.reject! do |post|

@@ -29,12 +29,15 @@ if post.is_crossposted?
 end
 %>
 <div class="buttons">
-  <% if @newsgroup.posting_allowed? %>
+  <% if not @search_mode and @newsgroup.posting_allowed? %>
     <a class="button new_draft"
       href="#?<%= new_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Post Reply</a>
   <% end %>
+  <% if @search_mode %>
+    <a class="button" href="#!<%= post_path(@newsgroup.name, post.number) %>">View in Thread</a>
+  <% end %>
   <a class="button" href="#" onclick="$('#post_view .headers').toggle()">Show Headers</a>
-  <% if post.authored_by?(@current_user) and post.children.count == 0 and @newsgroup.posting_allowed? %>
+  <% if not @search_mode and post.authored_by?(@current_user) and post.children.count == 0 and @newsgroup.posting_allowed? %>
     <a class="button red" href="#?<%= confirm_destroy_post_path(:newsgroup => @newsgroup.name, :number => post.number) %>">Cancel Post</a>
   <% end %>
 </div>
