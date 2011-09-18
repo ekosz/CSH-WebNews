@@ -5,6 +5,7 @@ class PagesController < ApplicationController
     respond_to do |wants|
       
       wants.html do
+        set_no_cache
         @current_user.real_name = request.env['WEBAUTH_LDAP_CN']
         @current_user.save!
         sync_posts

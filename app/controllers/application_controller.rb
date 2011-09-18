@@ -8,12 +8,14 @@ class ApplicationController < ActionController::Base
   
     def authenticate
       if not request.env['WEBAUTH_USER']
+        set_no_cache
         render :file => "#{Rails.root}/public/auth.html", :layout => false
       end
     end
     
     def check_maintenance
       if File.exists?('tmp/maintenance.txt')
+        set_no_cache
         @no_script = true
         @explanation = File.read('tmp/maintenance.txt')
         respond_to do |wants|
@@ -48,4 +50,11 @@ class ApplicationController < ActionController::Base
     def form_error(error_text)
       render :partial => 'shared/form_error', :object => error_text
     end
+    
+    def set_no_cache
+      response.headers['Cache-Control'] =
+        'must-revalidate, private, no-cache, no-store, max-age=0'
+      response.headers['Pragma'] = 'no-cache'
+      response.headers['Expires'] = DateTime.now.rfc822
+    end 
 end
