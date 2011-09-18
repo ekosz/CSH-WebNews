@@ -11,6 +11,14 @@ class Post < ActiveRecord::Base
     author[/"?.*?"? <(.*)>/, 1] || author[/(.*) \(.*\)/, 1] || nil
   end
   
+  def author_username
+    author_email.split('@')[0] if author_email
+  end
+  
+  def author_is_local?
+    !author_email[LOCAL_EMAIL_DOMAIN].nil? if author_email
+  end
+  
   def quoted_body
     author_name + " wrote:\n\n" +
       body.chomp.sub(/(.*)\n-- \n.*/m, '\\1').

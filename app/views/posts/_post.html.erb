@@ -47,7 +47,16 @@ end
     <div class="byline">Posted
       <span class="date"><%= post.date.in_time_zone(@current_user.time_zone).strftime(DATE_FORMAT) %></span>
       by <span class="author">
-        <%= post.author_name %><%= ' <' + post.author_email + '>' if post.author_email %>
+        <%= post.author_name %>
+        <% if post.author_is_local? %>
+          <%= ' (' + post.author_username + ')' %>
+          <a target="_blank" href="<%= PROFILES_URL + post.author_username %>"
+            title="Go to this user's profile page">Profile</a>
+          <a target="_blank" href="<%= WIKI_URL + post.author_username.capitalize %>"
+            title="Go to this user's wiki page">Wiki</a>
+        <% else %>
+          <%= ' <' + post.author_email + '>' if post.author_email %>
+        <% end %>
       </span>
     </div>
     <% if post.is_reparented? %>

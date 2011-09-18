@@ -32,7 +32,7 @@
       </div>
     <% end %>
     
-    <p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field by using <a href="https://members.csh.rit.edu/profiles/">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>
+    <p>Your &quot;real name&quot; is taken from the Common Name (CN) field in the CSH LDAP database. You can change this field using <a target="_blank" href="<%= PROFILES_URL + @current_user.username %>">Member Profiles</a>. This may also change your displayed &quot;real name&quot; on other CSH services.</p>
     
     <div class="buttons">
       <%= f.submit 'Save', :class => 'button green' %>

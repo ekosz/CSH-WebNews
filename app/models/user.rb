@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   attr_readonly :username, :real_name
   
   def email
-    username + '@csh.rit.edu'
+    username + LOCAL_EMAIL_DOMAIN
   end
   
   def time_zone
