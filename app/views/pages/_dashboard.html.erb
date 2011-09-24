@@ -1,5 +1,5 @@
 <div id="dashboard">
-<h2 id="dashboard_head">Home</h2>
+<h2>Home</h2>
 
 <%
 unread = @current_user.unread_count
@@ -26,7 +26,7 @@ else
 end
 %>
 
-<p><%= raw unread_line %></p>
+<p id="unread_line"><%= raw unread_line %></p>
 
 <%= render 'activity' %>
 

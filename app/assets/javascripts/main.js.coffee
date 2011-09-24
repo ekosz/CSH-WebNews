@@ -105,8 +105,10 @@ $('a.mark_read').live 'click', ->
   $('#groups_list [data-name="' + selected + '"]').addClass('selected')
   
   if location.hash.match '#!/home'
-    $('#group_view').empty().append(chunks.spinner.clone())
-    success = -> window.onhashchange()
+    document.title = 'CSH WebNews'
+    $('#unread_line').text('You have no unread posts.')
+    $('table.activity a').removeClass('unread')
+    success = null
   else
     $('#posts_list tbody tr').removeClass('unread')
     if window.active_scroll_load
