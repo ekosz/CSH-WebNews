@@ -1,24 +1,43 @@
 @chunks = {}
-@check_new_delay = 15000
-@check_new_retry_delay = 5000
+@check_new_interval = 15000
+@check_new_retry_interval = 5000
 @draft_save_interval = 2000
 window.active_navigation = false
 window.active_scroll_load = false
 window.active_check_new = false
-window.draft_interval_func = false
+window.check_new_timeout = false
+window.draft_save_timer = false
 
 jQuery.fn.outerHTML = ->
   $('<div>').append(this.eq(0).clone()).html()
 
+@set_check_timeout = (retry = false) ->
+  window.check_new_timeout = setTimeout (->
+    window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+  ), (if retry then check_new_retry_interval else check_new_interval)
+
+@clear_check_timeout = ->
+  clearInterval(window.check_new_timeout)
+
+@abort_active_check = ->
+  if window.active_check_new
+    window.active_check_new.abort()
+    window.active_check_new = false
+
+@abort_active_scroll = ->
+  if window.active_scroll_load
+    window.active_scroll_load.abort()
+    window.active_scroll_load = false
+
 @set_draft_interval = ->
   $('a.resume_draft').show()
-  window.draft_interval_func = setInterval (->
+  window.draft_save_timer = setInterval (->
     localStorage['draft_html'] = $('#dialog').outerHTML()
     localStorage['draft_form'] = JSON.stringify($('#dialog form').serializeArray())
   ), draft_save_interval
 
 @clear_draft_interval = ->
-  clearInterval(window.draft_interval_func)
+  clearInterval(window.draft_save_timer)
 
 @toggle_thread_expand = (tr) ->
   if tr.find('.expandable').length > 0
@@ -42,9 +61,7 @@ window.onhashchange = ->
     new_group = location.hash.split('/')[1]
     loaded_group = $('#groups_list [data-loaded]').attr('data-name')
     if new_group != loaded_group
-      if window.active_scroll_load
-        window.active_scroll_load.abort()
-        window.active_scroll_load = false
+      abort_active_scroll()
       $('#group_view').empty().append(chunks.spinner.clone())
       $('#post_view').empty()
       $('#groups_list [data-loaded]').removeAttr('data-loaded')
@@ -68,9 +85,7 @@ $(document).ready ->
   else
     window.onhashchange()
   
-  setTimeout (->
-    window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
-  ), check_new_delay
+  set_check_timeout()
 
 $('a[href="#"]').live 'click', ->
   return false
@@ -86,12 +101,8 @@ $('a[href^="#?/"]').live 'click', ->
   return false
 
 $('a.mark_read').live 'click', ->
-  if window.active_check_new
-    window.active_check_new.abort()
-    window.active_check_new = false
-    setTimeout (->
-      window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
-    ), check_new_delay
+  clear_check_timeout()
+  abort_active_check()
   
   selected = $('#groups_list .selected').attr('data-name')
   newsgroup = $(this).attr('data-newsgroup')
@@ -104,19 +115,18 @@ $('a.mark_read').live 'click', ->
     $('#next_unread').attr('href', '#')
   $('#groups_list [data-name="' + selected + '"]').addClass('selected')
   
+  after_func = null
   if location.hash.match '#!/home'
     document.title = 'CSH WebNews'
     $('#unread_line').text('You have no unread posts.')
     $('table.activity a').removeClass('unread')
-    success = null
   else
+    abort_active_scroll()
+    after_func = -> $('#posts_list').scroll()
     $('#posts_list tbody tr').removeClass('unread')
-    if window.active_scroll_load
-      window.active_scroll_load.abort()
-      window.active_scroll_load = false
-      success = -> $('#posts_list').scroll()
   
-  $.getScript @href.replace('#~', ''), success
+  $.getScript @href.replace('#~', ''), after_func
+  set_check_timeout()
   return false
 
 $('a.minimize_draft').live 'click', ->
@@ -177,8 +187,6 @@ $(document).ajaxError (event, jqxhr, settings, exception) ->
     if settings.url.match 'check_new'
       $('body').append(chunks.ajax_error.clone()) if $('#ajax_error').length == 0
       window.active_check_new = false
-      setTimeout (->
-        window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
-      ), check_new_retry_delay
+      set_check_timeout(true)
     else
       alert("An error occurred requesting #{settings.url}\n\nThis might be due to a connection issue on your end, or it might indicate a bug in WebNews. Check your connection and refresh the page. If this error persists, please file a bug report with the steps needed to reproduce it.")
