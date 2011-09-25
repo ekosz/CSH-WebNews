@@ -1,4 +1,4 @@
-<% @posts.each do |post| %>
+<% posts.each do |post| %>
   <% if @search_mode %>
     <%= render :partial => 'post_row', :locals => { :post => post, :level => 1 } %>
   <% else %>

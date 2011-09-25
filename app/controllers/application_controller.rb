@@ -55,6 +55,6 @@ class ApplicationController < ActionController::Base
       response.headers['Cache-Control'] =
         'must-revalidate, private, no-cache, no-store, max-age=0'
       response.headers['Pragma'] = 'no-cache'
-      response.headers['Expires'] = DateTime.now.rfc822
+      response.headers['Expires'] = Time.now.rfc822
     end 
 end

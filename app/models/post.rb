@@ -223,7 +223,7 @@ class Post < ActiveRecord::Base
     body.rstrip!
     body += "\n\n--- Attachments stripped by WebNews ---" if attachments_stripped
     
-    date = DateTime.parse(headers[/^Date: (.*)/i, 1])
+    date = Time.parse(headers[/^Date: (.*)/i, 1])
     subject = first_line = headers[/^Subject: (.*)/i, 1]
     references = headers[/^References: (.*)/i, 1].to_s.split.map{ |r| r[/<.*>/] }
     parent_id = references[-1] || ''

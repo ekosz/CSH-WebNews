@@ -9,32 +9,49 @@ class PostsController < ApplicationController
     @not_found = true if params[:not_found]
     
     if params[:showing]
-      limit = 11
       @showing = @newsgroup.posts.find_by_number(params[:showing])
-      showing_thread = @showing.thread_parent
-      @posts = @newsgroup.posts.
-        where('parent_id = ? and date >= ?', '', showing_thread.date).
-        order('date DESC')
-      @posts += @newsgroup.posts.
-        where('parent_id = ? and date < ?', '', showing_thread.date).
-        order('date DESC').limit(limit)
-    else
-      limit = 16
-      @posts = @newsgroup.posts.
-        where('parent_id = ? and date < ?', '', @from).
+      @showing_thread = @showing.thread_parent
+      @from_older = @showing_thread.date
+      @from_newer = @showing_thread.date
+    end
+    
+    limit = (@from_older and @from_newer) ? 6 : 11
+    
+    if not (@from_older or @from_newer)
+      @from_older = Time.now + 1.second
+    end
+    
+    if @from_older
+      @posts_older = @newsgroup.posts.
+        where('parent_id = ? and date < ?', '', @from_older).
         order('date DESC').limit(limit)
     end
     
-    @more = @posts.length > 0 && !@posts[limit - 1].nil?
-    @posts.delete_at(-1) if @posts.length == limit
+    if @from_newer
+      @from_newer = @newsgroup.posts.where(:date => @from_newer).first.thread_parent.date
+      @posts_newer = @newsgroup.posts.
+        where('parent_id = ? and date > ?', '', @from_newer).
+        order('date').limit(limit)
+    end
+    
+    if @posts_older
+      @more_older = @posts_older.length > 0 && !@posts_older[limit - 1].nil?
+      @posts_older.delete_at(-1) if @posts_older.length == limit
+    end
+    if @posts_newer
+      @more_newer = @posts_newer.length > 0 && !@posts_newer[limit - 1].nil?
+      @posts_newer.delete_at(-1) if @posts_newer.length == limit
+    end
   end
   
   def search
-    limit = 16
+    limit = 21
     conditions, values, error_text = build_search_conditions
     
-    conditions << 'date < ?'
-    values << @from
+    if @from_older
+      conditions << 'date < ?'
+      values << @from_older
+    end
     if not @newsgroup
       conditions << 'newsgroup not like ?'
       values << 'control%'
@@ -56,9 +73,9 @@ class PostsController < ApplicationController
     end
     
     @search_mode = true
-    @posts = Post.where(conditions.join(' and '), *values).order('date DESC').limit(limit)
-    @more = @posts.length > 0 && !@posts[limit - 1].nil?
-    @posts.delete_at(-1) if @posts.length == limit
+    @posts_older = Post.where(conditions.join(' and '), *values).order('date DESC').limit(limit)
+    @more_older = @posts_older.length > 0 && !@posts_older[limit - 1].nil?
+    @posts_older.delete_at(-1) if @posts_older.length == limit
     render 'index'
   end
   
@@ -184,12 +201,12 @@ class PostsController < ApplicationController
     end
     
     def set_list_layout_and_offset
-      @full_layout = true
-      @from = if params[:from]
+      if params[:from_older] or params[:from_newer]
         @full_layout = false
-        DateTime.parse(params[:from])
+        @from_older = Time.parse(params[:from_older]) rescue nil
+        @from_newer = Time.parse(params[:from_newer]) rescue nil
       else
-        DateTime.now + 1.second
+        @full_layout = true
       end
     end
     

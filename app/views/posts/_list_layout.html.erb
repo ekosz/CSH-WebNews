@@ -21,22 +21,27 @@
 <div id="posts_list">
   <table>
     <thead>
-      <tr>
+      <tr id="posts_list_headers">
         <% cols = 3 %>
         <th>Subject</th>
         <% if @search_mode and not @newsgroup %><% cols = 4 %><th>Newsgroup</th><% end %>
         <th>Author</th>
         <th>Date</th>
       </tr>
+      <% if @more_newer %>
+        <tr id="posts_load_newer" style="margin-top: -1px">
+          <th colspan="<%= cols %>" class="spinner">Loading newer posts...</th>
+        </tr>
+      <% end %>
     </thead>
     <tbody>
       <%= yield %>
     </tbody>
-    <tfoot id="posts_load"<%= @more ? '' : ' data-nomore="true"' %>>
-      <% if @more %>
-        <th colspan="<%= cols %>" class="spinner">Loading more posts...</th>
-      <% else %>
-        <th colspan="<%= cols %>">No more posts!</th>
+    <tfoot>
+      <% if @more_older %>
+        <tr id="posts_load_older">
+          <th colspan="<%= cols %>" class="spinner">Loading older posts...</th>
+        </tr>
       <% end %>
     </tfoot>
   </table>

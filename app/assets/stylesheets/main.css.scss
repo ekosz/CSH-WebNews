@@ -295,7 +295,7 @@ input[type="submit"] { margin-right: 0; }
   
     table {
       width: 100%;
-      line-height: 1.5;
+      line-height: 20px;
       table-layout: fixed;
       
       tbody tr {
@@ -321,15 +321,12 @@ input[type="submit"] { margin-right: 0; }
         }
       }
       
-      tfoot th {
+      th.spinner {
         padding-left: 22px;
         border-top: 1px solid $border_light;
-        
-        &.spinner {
-          background-repeat: no-repeat;
-          background-position: left center;
-          background-image: url('spinner-sm.gif');
-        }
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-image: url('spinner-sm.gif');
       }
       
       .indent {
