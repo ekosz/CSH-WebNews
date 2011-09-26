@@ -53,8 +53,9 @@ class ApplicationController < ActionController::Base
     
     def set_no_cache
       response.headers['Cache-Control'] =
-        'must-revalidate, private, no-cache, no-store, max-age=0'
+        'no-store, no-cache, private, must-revalidate, max-age=0'
       response.headers['Pragma'] = 'no-cache'
-      response.headers['Expires'] = Time.now.rfc822
+      response.headers['Expires'] = '0'
+      response.headers['Vary'] = '*'
     end 
 end
