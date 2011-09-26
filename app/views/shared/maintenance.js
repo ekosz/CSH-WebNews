@@ -1,1 +1,1 @@
-alert('Error: WebNews has gone down for maintenance! Refresh the page for details (if you were composing a post, you might want to copy the text first). All dynamic updating has been halted.');
+alert('Error: WebNews has gone down for maintenance! Refresh the page for details (if you were working on a draft, it will be saved). You will not see any new posts until you refresh.');
