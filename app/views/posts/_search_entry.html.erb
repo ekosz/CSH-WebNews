@@ -24,10 +24,10 @@
     
     <div class="form_element aligned_field">
       <%= label_tag :date_from, 'In date range:' %><%= text_field_tag :date_from,
-        params[:date_from], :class => 'date' %>
+        params[:date_from], :class => 'date', :placeholder => 'the beginning' %>
       <%= label_tag :date_to, 'to' %>
-      <%= text_field_tag :date_to, params[:date_to], :class => 'date' %>
-      <p class="explain">Enter absolute or relative dates in any format ("june 2009", "9/17/2011", "3 weeks ago")</p>
+      <%= text_field_tag :date_to, params[:date_to], :class => 'date', :placeholder => 'right now' %>
+      <p class="explain">Enter absolute dates ("9/17/2011") or relative dates ("3 weeks ago")</p>
     </div>
     
     <%= hidden_field_tag :validate, true %>

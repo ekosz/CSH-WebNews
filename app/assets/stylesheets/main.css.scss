@@ -509,6 +509,7 @@ input[type="submit"] { margin-right: 0; }
   }
   
   .aligned_field {
+    label { vertical-align: middle; }
     label:first-child { width: 90px; display: inline-block; }
     input[type=text] { width: 350px; }
     input[type=checkbox] { vertical-align: middle; margin-left: 20px; }
