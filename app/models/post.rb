@@ -75,14 +75,6 @@ class Post < ActiveRecord::Base
     Post.where(:thread_id => thread_id)
   end
   
-  def thread_parent_old
-    if parent_id == ''
-      self
-    else
-      parent.thread_parent_old
-    end
-  end
-  
   def original_parent_id
     headers[/^References: (.*)/i, 1].to_s.split.map{ |r| r[/<.*>/] }[-1] || ''
   end
