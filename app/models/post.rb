@@ -72,7 +72,7 @@ class Post < ActiveRecord::Base
   end
   
   def all_in_thread
-    Post.where(:thread_id => thread_id)
+    Post.where(:thread_id => thread_id, :newsgroup => newsgroup.name)
   end
   
   def original_parent_id

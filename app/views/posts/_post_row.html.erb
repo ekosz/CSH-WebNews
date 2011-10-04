@@ -5,6 +5,7 @@ tr_class ||= post.personal_class_for_user(@current_user)
 
 <tr class="<%= (post.unread_for_user?(@current_user) ? 'unread ' : '') + tr_class.to_s %>"
   data-id="<%= post.id %>"
+  data-number="<%= post.number %>"
   data-level="<%= level %>"
   data-date="<%= post.date %>"
   data-parent="<%= post.parent ? post.parent.number : '' %>">

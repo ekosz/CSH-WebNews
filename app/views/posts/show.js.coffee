@@ -44,6 +44,7 @@ else
   $('#posts_list .selected').removeClass('unread')
 
 <% if @post_was_unread %>
+reset_check_timeout()
 group = $('#groups_list li[data-name="<%= @newsgroup.name %>"]')
 selected = group.hasClass('selected')
 group.removeClass()
@@ -55,10 +56,9 @@ if unread.count > 0
 else
   group.find('.unread_count').remove()
 group.addClass('selected') if selected
-
-$('#next_unread').attr('href', '<%= next_unread_href %>')
 <% end %>
 
+$('#next_unread').attr('href', '<%= next_unread_href %>')
 $(window).resize()
 
 <% end %>

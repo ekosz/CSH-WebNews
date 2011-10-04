@@ -13,16 +13,23 @@ jQuery.fn.outerHTML = ->
 
 @set_check_timeout = (retry = false) ->
   window.check_new_timeout = setTimeout (->
-    window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash)
+    window.active_check_new = $.getScript '/check_new?location=' + encodeURIComponent(location.hash) +
+      '&newsgroup=' + encodeURIComponent($('#groups_list .selected').attr('data-name')) +
+      '&number=' + encodeURIComponent($('#posts_list .selected').attr('data-number'))
   ), (if retry then check_new_retry_interval else check_new_interval)
 
 @clear_check_timeout = ->
-  clearInterval(window.check_new_timeout)
+  clearTimeout(window.check_new_timeout)
 
 @abort_active_check = ->
   if window.active_check_new
     window.active_check_new.abort()
     window.active_check_new = false
+
+@reset_check_timeout = ->
+  clear_check_timeout()
+  abort_active_check()
+  set_check_timeout()
 
 @abort_active_scroll = ->
   if window.active_scroll_load
@@ -39,19 +46,24 @@ jQuery.fn.outerHTML = ->
 @clear_draft_interval = ->
   clearInterval(window.draft_save_timer)
 
+# Returns number of rows shown or hidden by the expand/collapse
 @toggle_thread_expand = (tr) ->
+  rows_changed = 0
   if tr.find('.expandable').length > 0
     tr.find('.expandable').removeClass('expandable').addClass('expanded')
     for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
       break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
       $(child).show()
       $(child).find('.expandable').removeClass('expandable').addClass('expanded')
+      rows_changed += 1
   else if tr.find('.expanded').length > 0 and tr.hasClass('selected')
     tr.find('.expanded').removeClass('expanded').addClass('expandable')
     for child in tr.nextUntil('[data-level=' + tr.attr('data-level') + ']')
       break if parseInt($(child).attr('data-level')) < parseInt(tr.attr('data-level'))
       $(child).hide()
       $(child).find('.expanded').removeClass('expanded').addClass('expandable')
+      rows_changed += 1
+  return rows_changed
 
 window.onhashchange = ->
   if location.hash.substring(0, 3) == '#!/'
@@ -101,8 +113,7 @@ $('a[href^="#?/"]').live 'click', ->
   return false
 
 $('a.mark_read').live 'click', ->
-  clear_check_timeout()
-  abort_active_check()
+  reset_check_timeout()
   
   selected = $('#groups_list .selected').attr('data-name')
   newsgroup = $(this).attr('data-newsgroup')

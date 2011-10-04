@@ -2,6 +2,7 @@
 
 <% if not @showing %>
 document.title = '<%= @search_mode ? 'Search Results' : @newsgroup.name %>'
+$('#next_unread').attr('href', '<%= next_unread_href %>')
 <% if not @not_found %>$('#post_view').empty()<% end %>
 <% end %>
 
@@ -84,9 +85,12 @@ tr_height = from_tr.height()
 from_tr.prevAll().andSelf().find('.expanded').removeClass('expanded').addClass('expandable')
 from_tr.prevAll('[data-level!="1"]').hide()
 from_tr.nextUntil('[data-level="1"]').hide()
-for unread in from_tr.next('[data-level="1"]').prevAll('.unread[data-level!="1"]')
-  toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
-$('#posts_list').scrollTop($('#posts_list').scrollTop() + (tr_height * <%= @posts_newer.length %>))
+extra_rows = 0
+for unread in from_tr.nextAll('[data-level="1"]').first().prevAll('.unread[data-level!="1"]')
+  extra_rows += toggle_thread_expand $($(unread).prevAll('[data-level="1"]')[0])
+$('#posts_list').scrollTop(
+  $('#posts_list').scrollTop() + (tr_height * (<%= @posts_newer.length %> + extra_rows))
+)
 <% end %>
 
 window.active_scroll_load = false

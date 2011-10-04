@@ -42,6 +42,8 @@ class PostsController < ApplicationController
       @more_newer = @posts_newer.length > 0 && !@posts_newer[limit - 1].nil?
       @posts_newer.delete_at(-1) if @posts_newer.length == limit
     end
+    
+    get_next_unread_post
   end
   
   def search
@@ -76,6 +78,8 @@ class PostsController < ApplicationController
     @posts_older = Post.where(conditions.join(' and '), *values).order('date DESC').limit(limit)
     @more_older = @posts_older.length > 0 && !@posts_older[limit - 1].nil?
     @posts_older.delete_at(-1) if @posts_older.length == limit
+    
+    get_next_unread_post
     render 'index'
   end
   
@@ -86,7 +90,7 @@ class PostsController < ApplicationController
     @search_mode = (params[:search_mode] ? true : false)
     if @post
       @post_was_unread = @post.mark_read_for_user(@current_user)
-      get_next_unread_post if @post_was_unread
+      get_next_unread_post
     else
       @not_found = true
     end
@@ -183,18 +187,6 @@ class PostsController < ApplicationController
   end
   
   private
-    
-    def get_newsgroup
-      if params[:newsgroup]
-        @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
-      end
-    end
-    
-    def get_post
-      if params[:newsgroup] and params[:number]
-        @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
-      end
-    end
     
     def get_newsgroups_for_posting
       @newsgroups = Newsgroup.where_posting_allowed

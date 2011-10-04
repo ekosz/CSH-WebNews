@@ -1,5 +1,7 @@
 class PagesController < ApplicationController
   before_filter :get_newsgroups, :only => [:home, :check_new]
+  before_filter :get_newsgroup, :only => :check_new
+  before_filter :get_post, :only => :check_new
 
   def home
     respond_to do |wants|
@@ -13,6 +15,7 @@ class PagesController < ApplicationController
       
       wants.js do
         get_activity_feed
+        get_next_unread_post
       end
       
     end
@@ -39,7 +42,7 @@ class PagesController < ApplicationController
     else
       @current_user.unread_post_entries.destroy_all
     end
-    render :nothing => true
+    get_next_unread_post
   end
   
   private

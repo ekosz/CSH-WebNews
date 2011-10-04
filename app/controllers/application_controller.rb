@@ -46,8 +46,28 @@ class ApplicationController < ActionController::Base
       @newsgroups = Newsgroup.unscoped.order('status DESC, name')
     end
     
+    def get_newsgroup
+      if params[:newsgroup]
+        @newsgroup = Newsgroup.find_by_name(params[:newsgroup])
+      end
+    end
+    
+    def get_post
+      if params[:newsgroup] and params[:number]
+        @post = Post.where(:number => params[:number], :newsgroup => params[:newsgroup]).first
+      end
+    end
+    
     def get_next_unread_post
-      @next_unread_post = @current_user.unread_posts.order('newsgroup, date').first
+      if @post
+        order = "CASE newsgroup WHEN #{Post.sanitize(@post.newsgroup.name)} THEN 1 ELSE 2 END,
+        CASE thread_id WHEN #{Post.sanitize(@post.thread_id)} THEN 1 ELSE 2 END, newsgroup, date"
+      elsif @newsgroup
+        order = "CASE newsgroup WHEN #{Post.sanitize(@newsgroup.name)} THEN 1 ELSE 2 END, newsgroup, date"
+      else
+        order = 'newsgroup, date'
+      end
+      @next_unread_post = @current_user.unread_posts.order(order).first
     end
     
     def form_error(error_text)
