@@ -9,7 +9,7 @@ module ApplicationHelper
   end
   
   def home_page_title
-    if @current_user.unread_count > 0
+    if @current_user and @current_user.unread_count > 0
       "(#{@current_user.unread_count}) CSH WebNews"
     else
       'CSH WebNews'
