@@ -68,10 +68,18 @@ class Post < ActiveRecord::Base
   end
   
   def thread_parent
+    Post.where(:message_id => thread_id, :newsgroup => newsgroup.name).first
+  end
+  
+  def all_in_thread
+    Post.where(:thread_id => thread_id)
+  end
+  
+  def thread_parent_old
     if parent_id == ''
       self
     else
-      parent.thread_parent
+      parent.thread_parent_old
     end
   end
   
@@ -89,10 +97,7 @@ class Post < ActiveRecord::Base
   
   def user_in_thread?(user)
     return true if authored_by?(user)
-    children.each do |child|
-      return true if child.user_in_thread?(user)
-    end
-    return false
+    return all_in_thread.reduce(false){ |m, post| m || post.authored_by?(user) }
   end
   
   def unread_for_user?(user)
@@ -110,12 +115,8 @@ class Post < ActiveRecord::Base
   end
   
   def thread_unread_for_user?(user)
-    if unread_for_user?(user)
-      return true
-    elsif children.count > 0
-      return true if children.reduce(false){ |memo, child| memo || child.thread_unread_for_user?(user) }
-    end
-    return false
+    return true if unread_for_user?(user)
+    return all_in_thread.reduce(false){ |m, post| m || post.unread_for_user?(user) }
   end
   
   def personal_class_for_user(user)
@@ -130,7 +131,7 @@ class Post < ActiveRecord::Base
     # Sub-optimal, should re-parent to next reference up the chain
     # (but posts getting canceled when they already have replies is rare)
     Post.where(:parent_id => message_id).each do |post|
-      post.update_attributes(:parent_id => '', :first_line => post.subject)
+      post.update_attributes(:parent_id => '', :thread_id => post.message_id, :first_line => post.subject)
     end
   end
   
@@ -224,20 +225,24 @@ class Post < ActiveRecord::Base
     body += "\n\n--- Attachments stripped by WebNews ---" if attachments_stripped
     
     date = Time.parse(headers[/^Date: (.*)/i, 1])
+    author = headers[/^From: (.*)/i, 1]
     subject = first_line = headers[/^Subject: (.*)/i, 1]
+    message_id = headers[/^Message-ID: (.*)/i, 1]
     references = headers[/^References: (.*)/i, 1].to_s.split.map{ |r| r[/<.*>/] }
+    
     parent_id = references[-1] || ''
+    thread_id = message_id
     possible_thread_id = references[0] || ''
+    parent = where(:message_id => parent_id, :newsgroup => newsgroup.name).first
     
     # Note: Doesn't try to fix replies ("Re:") that simply have no References at all
-    if parent_id != '' and
-        not where(:message_id => parent_id, :newsgroup => newsgroup.name).exists?
+    if parent_id != '' and not parent
       if where(:message_id => parent_id).exists?
         parent_id = ''
       else
         if possible_thread_id != '' and
             where(:message_id => possible_thread_id, :newsgroup => newsgroup.name).exists?
-          parent_id = possible_thread_id
+          parent_id = thread_id = possible_thread_id
         else
           possible_thread_parent =
             where('subject = ? and newsgroup = ? and date < ?',
@@ -246,12 +251,14 @@ class Post < ActiveRecord::Base
               subject, newsgroup.name, date).order('date').first
           
           if possible_thread_parent
-            parent_id = possible_thread_parent.message_id
+            parent_id = thread_id = possible_thread_parent.message_id
           else
             parent_id = ''
           end
         end
       end
+    elsif parent # Parent exists and is in the same newsgroup
+      thread_id = parent.thread_id
     end
     
     if subject[/^Re:/i] and parent_id != ''
@@ -270,10 +277,11 @@ class Post < ActiveRecord::Base
     create!(:newsgroup => newsgroup,
             :number => number,
             :subject => subject,
-            :author => headers[/^From: (.*)/i, 1],
+            :author => author,
             :date => date,
-            :message_id => headers[/^Message-ID: (.*)/i, 1],
+            :message_id => message_id,
             :parent_id => parent_id,
+            :thread_id => thread_id,
             :first_line => first_line,
             :headers => headers,
             :body => body)

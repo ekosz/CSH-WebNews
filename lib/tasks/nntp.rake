@@ -10,4 +10,16 @@ namespace :nntp do
   task :sync => :environment do
     Newsgroup.sync_all!
   end
+  
+  task :threads => :environment do
+    count = 0
+    Post.find_each do |post|
+      if post.thread_id.nil?
+        post.thread_id = post.thread_parent_old.message_id
+        post.save!
+      end
+      count += 1
+      puts count if count % 100 == 0
+    end
+  end
 end
