@@ -13,6 +13,7 @@ end
 gem 'rails_autolink'
 gem 'coffeebeans'
 gem 'chronic'
+gem 'andand'
 
 # ExecJS engine
 gem 'therubyracer'

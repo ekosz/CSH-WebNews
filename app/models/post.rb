@@ -4,7 +4,7 @@ class Post < ActiveRecord::Base
   before_destroy :kill_parent_id
   
   def author_name
-    author[/"?(.*?)"? ?<.*>/, 1] || author[/.* \((.*)\)/, 1] || author
+    author[/"?(.*?)"? ?<.*>/, 1].andand.gsub('\\"', '"') || author[/.* \((.*)\)/, 1] || author
   end
   
   def author_email
