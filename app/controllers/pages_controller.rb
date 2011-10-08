@@ -50,7 +50,10 @@ class PagesController < ApplicationController
     def get_activity_feed
       recent_posts = Post.where('date > ?', 1.week.ago).order('date DESC')
       recent_posts.reject! do |post|
-        post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] || !post.newsgroup.posting_allowed?
+        # Won't reject posts that are crossposted to multiple excluded groups,
+        # though this pretty much never happens
+        !post.newsgroup.posting_allowed? ||
+          (post.newsgroup.name[ACTIVITY_FEED_EXCLUDE] && !post.is_crossposted?(true))
       end
       
       @active_threads = {}
