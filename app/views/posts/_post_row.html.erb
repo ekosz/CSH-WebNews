@@ -1,10 +1,9 @@
 <%
 expanded ||= false
 tr_class ||= post.personal_class_for_user(@current_user)
-topic    ||= post.parent ? '' : 'topic '
 %>
 
-<tr class="<%= (post.unread_for_user?(@current_user) ? 'unread ' : '') + topic + tr_class.to_s %>"
+<tr class="<%= (post.unread_for_user?(@current_user) ? 'unread ' : '') + tr_class.to_s %>"
   data-id="<%= post.id %>"
   data-number="<%= post.number %>"
   data-level="<%= level %>"
