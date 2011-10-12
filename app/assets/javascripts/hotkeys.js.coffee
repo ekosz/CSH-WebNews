@@ -10,40 +10,40 @@ $ ->
       when 74 # j/J
         if e.shiftKey # J
           # Click next topic
-          $ns.find(ss).next(ts).click()
+          click $ns.find(ss).nextAll(ts).first()
         else if e.ctrlKey # ^j
           # Go to next group
-          $("#groups_list li.selected").next('li').click()
+          click $("#groups_list li.selected").next('li')
         else          # j
           # Click the next row from the one that is selected
-          $ns.find(ss).next('tr').click() 
+          click $ns.find(ss).next('tr')
       when 75 # k/K
         if e.shiftKey # K
           # Go to previous topic
-          $ns.find(ss).prev(ts).prev(ts).click()
+          click $ns.find(ss).prevAll(ts)[1]
         else if e.ctrlKey # ^k
           # Go to previous group
-          $("#groups_list li.selected").prev('li').click()
+          click $("#groups_list li.selected").prev('li')
         else          # k
           # Go to previous row
-          $ns.find(ss).prev('tr').click()
+          click $ns.find(ss).prev('tr')
       when 78         # n
         # Go to Next Unread
-        $("#next_unread").click()
+        click $("#next_unread")
       when 79 # o/O
         if e.shiftKey # O
           # Close the current topic
-          $ns.find(ss).prev(ts).click()
+          click $ns.find(ss).prevAll(ts).first()
         else          # o
           # Open/Close the selected row
-          $ns.find(ss).click()
+          click $ns.find(ss)
       when 82 # r/R
         if e.shiftKey # R
           # Mark all as read
-          $("#toolbar .mark_read").click()
+          click $("#toolbar .mark_read")
         else          # r
           # Mark all in group read
-          $("#group_view .mark_read").click()
+          click $("#group_view .mark_read")
 
     false # Prevent Default
 
@@ -63,4 +63,10 @@ isTyping = (e) ->
     return true
   else
     return false
+
+click = (el) ->
+  $el = $(el)
+  $el.click()
+  if (hash = $el.attr('href')) && hash[0..1] == '#!'
+    location.hash = hash[1..-1]
   
